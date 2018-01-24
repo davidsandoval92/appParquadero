@@ -1,0 +1,2 @@
+p11:10:31.150 [Test worker] ERROR com.ceiba.web.VehiculoServiceImpl - Fallo al guardar el registro del vehiculo
+e11:10:31.164 [Test worker] INFO com.ceiba.web.VehiculoServiceImpl - Vehiculo guardado correctamente
