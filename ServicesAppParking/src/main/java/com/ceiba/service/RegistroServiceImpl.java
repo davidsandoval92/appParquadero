@@ -1,5 +1,7 @@
 package com.ceiba.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -7,7 +9,7 @@ import com.ceiba.model.Registro;
 import com.ceiba.repository.RegistroRepository;
 
 @Service
-public class RegistroInterfaceImpl implements RegistroInterface {
+public class RegistroServiceImpl implements RegistroService {
 
 	@Autowired
 	RegistroRepository registroRepository;
@@ -23,7 +25,7 @@ public class RegistroInterfaceImpl implements RegistroInterface {
 	}
 
 	@Override
-	public Registro getRegistroByIdVehiculo(String idVehiculo) {
+	public List<Registro> getRegistrosByIdVehiculo(String idVehiculo) {
 		return registroRepository.findByidVehiculo(idVehiculo);
 	}
 
@@ -35,6 +37,11 @@ public class RegistroInterfaceImpl implements RegistroInterface {
 	@Override
 	public void deleteRegistro(String idRegistro) {
 		registroRepository.delete(idRegistro);
+	}
+
+	@Override
+	public Registro getRegistroByidVehiculoAndEstado(String idVehiculo, String estado) {
+		return registroRepository.findByidVehiculoAndEstado(idVehiculo, estado);
 	}
 
 }

@@ -16,6 +16,9 @@ public class Vehiculo implements Serializable {
 	@Id
 	@Column(name = "ID_VEHICULO")
 	private String idVehiculo;
+	
+	@Column(name = "Activo")
+	private int activo;
 
 	@Column(name = "Cilindraje")
 	private int cilindraje;
@@ -29,16 +32,21 @@ public class Vehiculo implements Serializable {
 	@Column(name = "Placa")
 	private String placa;
 	
+	@Column(name = "Tipovehiculo")
+	private String tipoVehiculo;
+	
 	public Vehiculo(){
 		//Constructor Vacio
 	}
 
-	public Vehiculo(String idVehiculo, int cilindraje, String color, String marca, String placa) {
+	public Vehiculo(String idVehiculo, int activo, int cilindraje, String color, String marca, String placa, String tipoVehiculo) {
 		this.idVehiculo = idVehiculo;
+		this.activo = activo;
 		this.cilindraje = cilindraje;
 		this.color = color;
 		this.marca = marca;
 		this.placa = placa;
+		this.tipoVehiculo = tipoVehiculo;
 	}
 
 	public Vehiculo(String idVehiculo) {
@@ -47,6 +55,14 @@ public class Vehiculo implements Serializable {
 
 	public String getIdVehiculo() {
 		return this.idVehiculo;
+	}
+	
+	public int getActivo() {
+		return this.activo;
+	}
+
+	public void setActivo(int activo) {
+		this.activo = activo;
 	}
 
 	public void setIdVehiculo(String idVehiculo) {
@@ -83,6 +99,14 @@ public class Vehiculo implements Serializable {
 
 	public void setPlaca(String placa) {
 		this.placa = placa;
+	}
+	
+	public String getTipoVehiculo() {
+		return this.tipoVehiculo;
+	}
+
+	public void setTipoVehiculo(String tipoVehiculo) {
+		this.tipoVehiculo = tipoVehiculo;
 	}
 
 }

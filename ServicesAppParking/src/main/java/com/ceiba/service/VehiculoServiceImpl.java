@@ -1,6 +1,5 @@
 package com.ceiba.service;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -8,7 +7,7 @@ import com.ceiba.model.Vehiculo;
 import com.ceiba.repository.VehiculoRepository;
 
 @Service
-public class VehiculoInterfaceImpl implements VehiculoInterface {
+public class VehiculoServiceImpl implements VehiculoService {
 
 	@Autowired
 	VehiculoRepository vehiculoRepository;
@@ -31,7 +30,16 @@ public class VehiculoInterfaceImpl implements VehiculoInterface {
 	@Override
 	public void deleteVehiculo(String id) {
 		vehiculoRepository.delete(id);
+	}
 
+	@Override
+	public Iterable<Vehiculo> cantidadVehiculosActivos(String tipovehiculo, int activo) {
+		return vehiculoRepository.findBytipoVehiculoAndActivo(tipovehiculo, activo);
+	}
+
+	@Override
+	public Vehiculo getVehiculoByPlaca(String placa) {
+		return vehiculoRepository.findByplaca(placa);
 	}
 
 }

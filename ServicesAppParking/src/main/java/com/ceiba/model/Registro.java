@@ -4,42 +4,54 @@ import java.io.Serializable;
 import javax.persistence.*;
 import java.util.Date;
 
-
 /**
  * The persistent class for the registro database table.
  * 
  */
 @Entity
 @Table(name = "registro")
-@NamedQuery(name="Registro.findAll", query="SELECT r FROM Registro r")
+@NamedQuery(name = "Registro.findAll", query = "SELECT r FROM Registro r")
 public class Registro implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@Column(name="ID_REGISTRO")
+	@Column(name = "ID_REGISTRO")
 	private String idRegistro;
+	
+	@Column(name = "estado")
+	private String estado;
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name="fechaingreso")
+	@Column(name = "fechaingreso")
 	private Date fechaingreso;
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name="fechasalida")
+	@Column(name = "fechasalida")
 	private Date fechasalida;
 
-	@Column(name="valorpagar")
+	@Column(name = "valorpagar")
 	private double valorpagar;
-	
-	@Column(name="ID_VEHICULO",insertable = false, updatable = false)
+
+	@Column(name = "ID_VEHICULO", insertable = false, updatable = false)
 	private String idVehiculo;
 
-	//bi-directional many-to-one association to Vehiculo
+	// bi-directional many-to-one association to Vehiculo
 	@ManyToOne()
-	@JoinColumn(name="ID_VEHICULO")
+	@JoinColumn(name = "ID_VEHICULO")
 	private Vehiculo vehiculo;
 
 	public Registro() {
 		// Constructor vacio.
+	}
+
+	public Registro(String idRegistro, String estado, Date fechaingreso, Date fechasalida, double valorpagar, String idVehiculo) {
+
+		this.idRegistro = idRegistro;
+		this.estado = estado;
+		this.fechaingreso = fechaingreso;
+		this.fechasalida = fechasalida;
+		this.valorpagar = valorpagar;
+		this.idVehiculo = idVehiculo;
 	}
 
 	public String getIdRegistro() {
@@ -48,6 +60,14 @@ public class Registro implements Serializable {
 
 	public void setIdRegistro(String idRegistro) {
 		this.idRegistro = idRegistro;
+	}
+
+	public String getEstado() {
+		return this.estado;
+	}
+
+	public void setEstado(String estado) {
+		this.estado = estado;
 	}
 
 	public Date getFechaingreso() {
@@ -81,7 +101,7 @@ public class Registro implements Serializable {
 	public void setVehiculo(Vehiculo vehiculo) {
 		this.vehiculo = vehiculo;
 	}
-	
+
 	public String getIdVehiculo() {
 		return this.idVehiculo;
 	}
