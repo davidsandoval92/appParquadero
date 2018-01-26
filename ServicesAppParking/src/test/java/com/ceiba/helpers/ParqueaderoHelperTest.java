@@ -106,7 +106,7 @@ public class ParqueaderoHelperTest {
 	public void validarCobroHoraCarro() throws ParseException {
 		// Arrange
 		int valorPagar = 0;
-		int valorEsperado = 4000;
+		int valorEsperado = 2000;
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd H:m:s");
 		Date fechaInicial=dateFormat.parse("2017-01-15 23:00:00");
         Date fechaFinal=dateFormat.parse("2017-01-16 01:10:10");
