@@ -92,7 +92,7 @@ public class ParqueaderoHelperTest {
 	@Test
 	public void validadPlaca() {
 		// Arrange
-		boolean flag = false;
+		boolean flag = true;
 		Vehiculo vehiculo = new VehiculoTestDataBuilder().withPlaca("aRM17D").build();
 		ParqueaderoHelper pruHelper = new ParqueaderoHelper();
 		// Act

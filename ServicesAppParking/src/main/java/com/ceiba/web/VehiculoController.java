@@ -14,7 +14,7 @@ import com.sun.jersey.api.client.config.ClientConfig;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
 import com.sun.jersey.api.json.JSONConfiguration;
 
-import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -32,6 +32,7 @@ public class VehiculoController {
 	private static final Logger log = LoggerFactory.getLogger(VehiculoController.class);
 	private static final String ERRORT = "Fallo al guardar el registro del vehiculo";
 	private static final String EXITOT = "Vehiculo guardado correctamente";
+	private static final String Response = "Response";
 
 	@Autowired
 	private VehiculoService vehiculoService;
@@ -52,51 +53,79 @@ public class VehiculoController {
 		return vehiculo;
 	}
 
-	@RequestMapping(method = RequestMethod.POST, value = "/guardar-vehiculo")
-	public Vehiculo guardarVehiculo(@RequestBody Vehiculo vehiculo) {
+	@RequestMapping(method = RequestMethod.GET, value = "/vehiculobyplaca/{placa}")
+	public Vehiculo recuperarVehiculoByPlaca(@PathVariable String placa) {
 
-		Vehiculo vehi = new Vehiculo();
-		Date date = new Date();
+		Vehiculo vehiculo;
+		vehiculo = vehiculoService.getVehiculoByPlaca(placa);
+		return vehiculo;
+	}
+	
+	@RequestMapping(method = RequestMethod.POST, value = "/guardar-vehiculo", produces = { "application/json" })
+	public HashMap<String, String> guardarVehiculo(@RequestBody Vehiculo vehiculo) {
+
+		HashMap<String, String> mapResponse = new HashMap<>();
+		ParqueaderoHelper helper = new ParqueaderoHelper();
+		boolean validacionTipoVehiculo = helper.validarTipoVehiculo(vehiculo);
+		boolean validacionDisponibilidad = catidadCarrosActivos(vehiculo.getTipoVehiculo());
+		boolean validacionPlaca = helper.validarPlacaLunesDomingos(vehiculo.getPlaca());
 		try {
-			ParqueaderoHelper helper = new ParqueaderoHelper();
-			if (helper.validarTipoVehiculo(vehiculo) && catidadCarrosActivos(vehiculo.getTipoVehiculo()) && helper.validarPlacaLunesDomingos(vehiculo.getPlaca())) {
-				vehi = vehiculoService.saveVehiculo(vehiculo);
-				Registro registro = new Registro();
-				registro.setVehiculo(vehiculo);
-				registro.setEstado("activo");
-				crearRegistro(registro);
+			if (vehiculoService.getVehiculoByPlaca(vehiculo.getPlaca()) == null) {
+				if (validacionTipoVehiculo && validacionDisponibilidad && validacionPlaca) {
+					String formattedPlaca = vehiculo.getPlaca().toUpperCase();
+					vehiculo.setPlaca(formattedPlaca);
+					Registro registro = new Registro();
+					registro.setVehiculo(vehiculo);
+					registro.setEstado("activo");
+					crearRegistro(registro);
+				} else {
+					if (!validacionTipoVehiculo) {
+						mapResponse.put(Response, "Solo se aceptan tipo de vehiculo como carro o moto.");
+					} else if (!validacionDisponibilidad) {
+						mapResponse.put(Response, "No hay cupo disponible para: " + vehiculo.getTipoVehiculo());
+					} else if (!validacionPlaca) {
+						mapResponse.put(Response, "No puede ingresar porque no está en un dia hábil");
+					}
+				}
+			} else {
+				mapResponse.put("Respuesta", "El vehiculo ya se encuentra registrado");
+				return mapResponse;
 			}
 		} catch (Exception e) {
 			log.error(ERRORT);
+			mapResponse.put("RespuestaError", "Ocurrio un error");
 		}
-		log.info(EXITOT);
-		return vehi;
+		return mapResponse;
 	}
 
 	@RequestMapping(method = RequestMethod.PUT, value = "/actualizar-vehiculo")
-	public Vehiculo actualizarVehiculo(@RequestBody Vehiculo vehiculo) {
+	public HashMap<String, String> actualizarVehiculo(@RequestBody Vehiculo vehiculo) {
 
-		Vehiculo vehi = new Vehiculo();
+		HashMap<String, String> mapResponse = new HashMap<>();
 		try {
-			vehi = vehiculoService.saveVehiculo(vehiculo);
+			vehiculoService.saveVehiculo(vehiculo);
+			mapResponse.put(Response, "Vehiculo actualizado correctamente");
 		} catch (Exception e) {
 			log.error(ERRORT);
+			mapResponse.put("ResponseError", "No se actualizo el vehiculo");
 		}
 		log.info(EXITOT);
-		return vehi;
+		return mapResponse;
 	}
 
 	@RequestMapping(method = RequestMethod.DELETE, value = "/eliminar-vehiculo/{id}")
-	public String eliminarVehiculo(@PathVariable String id) {
+	public HashMap<String, String> eliminarVehiculo(@PathVariable String id) {
+
+		HashMap<String, String> mapResponse = new HashMap<>();
 
 		try {
 			vehiculoService.deleteVehiculo(id);
+			mapResponse.put(Response, "Vehiculo eliminado");
 		} catch (Exception e) {
 			log.error(e.getMessage());
-			return ERRORT;
+			mapResponse.put("ResponseError", "No se elimino el vehiculo, revisar error");
 		}
-		log.info(EXITOT);
-		return EXITOT;
+		return mapResponse;
 	}
 
 	public boolean catidadCarrosActivos(String tipoVehiculo) {
@@ -118,20 +147,19 @@ public class VehiculoController {
 
 		return flag;
 	}
-	
-	public Registro crearRegistro(Registro registro){
-		
-		String urlService = "http://localhost:8080/registro-service/guardar-registro";
-		
+
+	public Registro crearRegistro(Registro registro) {
+
+		String urlService = "http://localhost:8081/registro-service/guardar-registro";
+
 		ClientConfig clientConfig = new DefaultClientConfig();
 		clientConfig.getFeatures().put(JSONConfiguration.FEATURE_POJO_MAPPING, Boolean.TRUE);
 		Client client = Client.create(clientConfig);
 		WebResource webResource = client.resource(urlService);
 		ClientResponse response = webResource.type("application/json").post(ClientResponse.class, registro);
-		Registro registroGuardado = response.getEntity(Registro.class);
-		
-		return registroGuardado;
-		
+
+		return response.getEntity(Registro.class);
+
 	}
 
 }

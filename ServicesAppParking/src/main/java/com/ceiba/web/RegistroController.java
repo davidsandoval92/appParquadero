@@ -2,6 +2,7 @@ package com.ceiba.web;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -18,6 +19,12 @@ import com.ceiba.model.Registro;
 import com.ceiba.model.Vehiculo;
 import com.ceiba.service.RegistroService;
 import com.ceiba.service.VehiculoService;
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.ClientResponse;
+import com.sun.jersey.api.client.WebResource;
+import com.sun.jersey.api.client.config.ClientConfig;
+import com.sun.jersey.api.client.config.DefaultClientConfig;
+import com.sun.jersey.api.json.JSONConfiguration;
 
 @RestController
 @RequestMapping("/registro-service")
@@ -58,47 +65,50 @@ public class RegistroController {
 	}
 
 	@RequestMapping(method = RequestMethod.POST, value = "/guardar-registro")
-	public Registro guardarRegistro(@RequestBody Registro registro) {
+	public HashMap<String, String> guardarRegistro(@RequestBody Registro registro) {
 
-		Registro reg = new Registro();
+		HashMap<String, String> mapResponse = new HashMap<>();
 
-		registro.setIdRegistro(java.util.UUID.randomUUID().toString().replaceAll("-",""));
+		registro.setIdRegistro(java.util.UUID.randomUUID().toString().replaceAll("-", ""));
 		java.util.Date fecha = new Date();
 		registro.setFechaingreso(fecha);
 		try {
-			reg = registroService.saveRegistro(registro);
+			registroService.saveRegistro(registro);
+			mapResponse.put("Respuesta", "Registro guardado correctamente");
 		} catch (Exception e) {
 			log.error(ERRORT);
-			log.error(e.getMessage());
+			mapResponse.put("RespuestaError", "Ocurrio un error, revisar log");
 		}
-		log.info(EXITOT);
-		return reg;
+		return mapResponse;
 	}
 
 	@RequestMapping(method = RequestMethod.PUT, value = "/actualizar-registro")
-	public Registro actualizarRegistro(@RequestBody Registro registro) {
+	public HashMap<String, String> actualizarRegistro(@RequestBody Registro registro) {
 
-		Registro reg = new Registro();
+		HashMap<String, String> mapResponse = new HashMap<>();
 		try {
-			reg = registroService.saveRegistro(registro);
+			registroService.saveRegistro(registro);
+			mapResponse.put("Response", "Registro actualizado correctamente");
 		} catch (Exception e) {
 			log.error(ERRORT);
+			mapResponse.put("ResponseError", "No se actualizo el registro");
 		}
 		log.info(EXITOT);
-		return reg;
+		return mapResponse;
 	}
 
 	@RequestMapping(method = RequestMethod.DELETE, value = "/eliminar-registro/{id}")
-	public String eliminarRegistro(@PathVariable String id) {
+	public HashMap<String, String> eliminarRegistro(@PathVariable String id) {
 
+		HashMap<String, String> mapResponse = new HashMap<>();
 		try {
 			registroService.deleteRegistro(id);
+			mapResponse.put("Response", "Registro eliminado");
 		} catch (Exception e) {
 			log.error(e.getMessage());
-			return ERRORT;
+			mapResponse.put("ResponseError", "No se elimino el registro, revisar error");
 		}
-		log.info(EXITOT);
-		return EXITOT;
+		return mapResponse;
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/pagar-ticket/{placa}")
@@ -114,18 +124,18 @@ public class RegistroController {
 		try {
 			vehiculo = vehiculoService.getVehiculoByPlaca(placa);
 			registro = registroService.getRegistroByidVehiculoAndEstado(vehiculo.getIdVehiculo(), "activo");
-			registro.setFechasalida(date);
-			registroService.saveRegistro(registro);
+
 			if (registro != null && vehiculo.getTipoVehiculo().equals(carro)) {
-				
+				registro.setFechasalida(date);
+				registroService.saveRegistro(registro);
 				ParqueaderoHelper helper = new ParqueaderoHelper();
 				valorGenerado = helper.procesarCobroCarro(registro.getFechaingreso(), registro.getFechasalida());
 				registro.setValorpagar(valorGenerado);
 				registro.setEstado("cancelado");
 				registroService.saveRegistro(registro);
-				
+
 			} else if (registro != null && vehiculo.getTipoVehiculo().equals(moto)) {
-				
+
 				ParqueaderoHelper helper = new ParqueaderoHelper();
 				valorGenerado = helper.procesarCobroMoto(registro.getFechaingreso(), registro.getFechasalida());
 				registro.setValorpagar(valorGenerado);
@@ -137,5 +147,41 @@ public class RegistroController {
 		}
 		return registro;
 	}
+	
+	@RequestMapping(method = RequestMethod.GET, value = "/vehiculos-consulta/{placa}")
+	public List<HashMap<String, String>> recuperarRegistrosVehiculoConsulta(@PathVariable String placa) {
+
+		HashMap<String, String> mapResponse = new HashMap<>();
+		List<HashMap<String, String>> mapResponses = new ArrayList<>();
+		Vehiculo vehiculo = vehiculoService.getVehiculoByPlaca(placa);
+		mapResponse.put("placa", vehiculo.getPlaca());
+		mapResponse.put("tipoVehiculo", vehiculo.getPlaca());
+		List<Registro>registros = registroService.getRegistrosByIdVehiculo(vehiculo.getIdVehiculo());
+		
+		for (Registro registro : registros) {
+			mapResponse.put("placa", vehiculo.getPlaca());
+			mapResponse.put("tipoVehiculo", vehiculo.getPlaca());
+			mapResponse.put("fechaingreso", registro.getFechaingreso().toString());
+			mapResponses.add(mapResponse);
+		}
+		
+		return mapResponses;
+	}
+	
+//	public List<Registro> obtenerRegistros(String placa) {
+//
+//		String urlService = "http://localhost:8081/vehiculo-service/vehiculobyplaca/"+placa;
+//		Vehiculo vehiculo = new Vehiculo();
+//		
+//		List<Registro> resultado = new ArrayList<>();
+//		ClientConfig clientConfig = new DefaultClientConfig();
+//		clientConfig.getFeatures().put(JSONConfiguration.FEATURE_POJO_MAPPING, Boolean.TRUE);
+//		Client client = Client.create(clientConfig);
+//		WebResource webResource = client.resource(urlService);
+//		vehiculo = webResource.type("application/json").get(Vehiculo.class);
+//
+//		return resultado;
+//
+//	}
 
 }

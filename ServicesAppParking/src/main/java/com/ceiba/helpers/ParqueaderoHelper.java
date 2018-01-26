@@ -41,11 +41,11 @@ public class ParqueaderoHelper {
 		if (letraUp.equals("A")) {
 			Calendar fechaPrestamo = Calendar.getInstance();
 			fechaPrestamo.setTime(new Date());
-			if (fechaPrestamo.get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY
-					&& fechaPrestamo.get(Calendar.DAY_OF_WEEK) != Calendar.MONDAY) {
-				flag = true;
-			} else {
+			if (fechaPrestamo.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY
+					|| fechaPrestamo.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY) {
 				flag = false;
+			} else {
+				flag = true;
 			}
 		}
 		return flag;
