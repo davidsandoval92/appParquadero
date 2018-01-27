@@ -61,15 +61,15 @@ public class ParqueaderoHelper {
 		int horas = 0;
 		int minutos = 0;
 		if (diferencia > 86400) {
-			dias = (int) Math.floor(diferencia / 86400);
+			dias = (int) Math.floor((double)diferencia / 86400);
 			diferencia = diferencia - (dias * 86400);
 		}
 		if (diferencia > 3600) {
-			horas = (int) Math.floor(diferencia / 3600);
+			horas = (int) Math.floor((double)diferencia / 3600);
 			diferencia = diferencia - (horas * 3600);
 		}
 		if (diferencia > 60) {
-			minutos = (int) Math.floor(diferencia / 60);
+			minutos = (int) Math.floor((double)diferencia / 60);
 			diferencia = diferencia - (minutos * 60);
 		}
 
