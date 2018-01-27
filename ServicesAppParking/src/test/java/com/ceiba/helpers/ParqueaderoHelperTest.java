@@ -107,19 +107,14 @@ public class ParqueaderoHelperTest {
 		// Arrange
 		int valorPagar = 0;
 		int valorEsperado = 2000;
+		final String tipoVehiculoC = "carro";
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd H:m:s");
 		Date fechaInicial=dateFormat.parse("2017-01-15 23:00:00");
         Date fechaFinal=dateFormat.parse("2017-01-16 01:10:10");
 		ParqueaderoHelper pruHelper = new ParqueaderoHelper();
 
 		// Act
-		try {
-			valorPagar = pruHelper.procesarCobroCarro(fechaInicial, fechaFinal);
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
+		valorPagar = pruHelper.procesarCobro(fechaInicial, fechaFinal, tipoVehiculoC);
 		// Assert
 		Assert.assertEquals(valorPagar, valorEsperado);
 	}
@@ -129,19 +124,14 @@ public class ParqueaderoHelperTest {
 		// Arrange
 		int valorPagar = 0;
 		int valorEsperado = 12000;
+		final String tipoVehiculoC = "carro";
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd H:m:s");
 		Date fechaInicial=dateFormat.parse("2017-01-15 07:00:00");
         Date fechaFinal=dateFormat.parse("2017-01-16 11:10:10");
 		ParqueaderoHelper pruHelper = new ParqueaderoHelper();
 
 		// Act
-		try {
-			valorPagar = pruHelper.procesarCobroCarro(fechaInicial, fechaFinal);
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
+		valorPagar = pruHelper.procesarCobro(fechaInicial, fechaFinal, tipoVehiculoC);
 		// Assert
 		Assert.assertEquals(valorPagar, valorEsperado);
 	}
@@ -151,19 +141,14 @@ public class ParqueaderoHelperTest {
 		
 		int valorPagar = 0;
 		int valorEsperado = 2000;
+		final String tipoVehiculoM = "moto";
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd H:m:s");
 		Date fechaInicial=dateFormat.parse("2017-01-15 07:00:00");
         Date fechaFinal=dateFormat.parse("2017-01-15 11:10:10");
 		ParqueaderoHelper pruHelper = new ParqueaderoHelper();
 
 		// Act
-		try {
-			valorPagar = pruHelper.procesarCobroMoto(fechaInicial, fechaFinal);
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
+		valorPagar = pruHelper.procesarCobro(fechaInicial, fechaFinal, tipoVehiculoM);
 		// Assert
 		Assert.assertEquals(valorPagar, valorEsperado);
 	}
@@ -173,19 +158,14 @@ public class ParqueaderoHelperTest {
 		
 		int valorPagar = 0;
 		int valorEsperado = 2600;
+		final String tipoVehiculoM = "moto";
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd H:m:s");
 		Date fechaInicial=dateFormat.parse("2017-01-15 07:00:00");
         Date fechaFinal=dateFormat.parse("2017-01-16 11:10:10");
 		ParqueaderoHelper pruHelper = new ParqueaderoHelper();
 
 		// Act
-		try {
-			valorPagar = pruHelper.procesarCobroMoto(fechaInicial, fechaFinal);
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
+		valorPagar = pruHelper.procesarCobro(fechaInicial, fechaFinal, tipoVehiculoM);
 		// Assert
 		Assert.assertEquals(valorPagar, valorEsperado);
 	}

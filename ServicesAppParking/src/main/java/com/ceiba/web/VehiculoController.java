@@ -7,15 +7,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.WebResource;
-import com.sun.jersey.api.client.config.ClientConfig;
-import com.sun.jersey.api.client.config.DefaultClientConfig;
+
+import com.sun.jersey.api.client.*;
+import com.sun.jersey.api.client.config.*;
 import com.sun.jersey.api.json.JSONConfiguration;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,7 +31,7 @@ public class VehiculoController {
 	private static final Logger log = LoggerFactory.getLogger(VehiculoController.class);
 	private static final String ERRORT = "Fallo al guardar el registro del vehiculo";
 	private static final String EXITOT = "Vehiculo guardado correctamente";
-	private static final String Response = "Response";
+	private static final String RESPONSE = "Response";
 
 	@Autowired
 	private VehiculoService vehiculoService;
@@ -62,7 +61,7 @@ public class VehiculoController {
 	}
 	
 	@RequestMapping(method = RequestMethod.POST, value = "/guardar-vehiculo", produces = { "application/json" })
-	public HashMap<String, String> guardarVehiculo(@RequestBody Vehiculo vehiculo) {
+	public Map<String, String> guardarVehiculo(@RequestBody Vehiculo vehiculo) {
 
 		HashMap<String, String> mapResponse = new HashMap<>();
 		ParqueaderoHelper helper = new ParqueaderoHelper();
@@ -80,11 +79,11 @@ public class VehiculoController {
 					crearRegistro(registro);
 				} else {
 					if (!validacionTipoVehiculo) {
-						mapResponse.put(Response, "Solo se aceptan tipo de vehiculo como carro o moto.");
+						mapResponse.put(RESPONSE, "Solo se aceptan tipo de vehiculo como carro o moto.");
 					} else if (!validacionDisponibilidad) {
-						mapResponse.put(Response, "No hay cupo disponible para: " + vehiculo.getTipoVehiculo());
+						mapResponse.put(RESPONSE, "No hay cupo disponible para: " + vehiculo.getTipoVehiculo());
 					} else if (!validacionPlaca) {
-						mapResponse.put(Response, "No puede ingresar porque no está en un dia hábil");
+						mapResponse.put(RESPONSE, "No puede ingresar porque no está en un dia hábil");
 					}
 				}
 			} else {
@@ -99,12 +98,12 @@ public class VehiculoController {
 	}
 
 	@RequestMapping(method = RequestMethod.PUT, value = "/actualizar-vehiculo")
-	public HashMap<String, String> actualizarVehiculo(@RequestBody Vehiculo vehiculo) {
+	public Map<String, String> actualizarVehiculo(@RequestBody Vehiculo vehiculo) {
 
 		HashMap<String, String> mapResponse = new HashMap<>();
 		try {
 			vehiculoService.saveVehiculo(vehiculo);
-			mapResponse.put(Response, "Vehiculo actualizado correctamente");
+			mapResponse.put(RESPONSE, "Vehiculo actualizado correctamente");
 		} catch (Exception e) {
 			log.error(ERRORT);
 			mapResponse.put("ResponseError", "No se actualizo el vehiculo");
@@ -114,13 +113,13 @@ public class VehiculoController {
 	}
 
 	@RequestMapping(method = RequestMethod.DELETE, value = "/eliminar-vehiculo/{id}")
-	public HashMap<String, String> eliminarVehiculo(@PathVariable String id) {
+	public Map<String, String> eliminarVehiculo(@PathVariable String id) {
 
 		HashMap<String, String> mapResponse = new HashMap<>();
 
 		try {
 			vehiculoService.deleteVehiculo(id);
-			mapResponse.put(Response, "Vehiculo eliminado");
+			mapResponse.put(RESPONSE, "Vehiculo eliminado");
 		} catch (Exception e) {
 			log.error(e.getMessage());
 			mapResponse.put("ResponseError", "No se elimino el vehiculo, revisar error");
@@ -141,8 +140,7 @@ public class VehiculoController {
 			flag = pruHelper.validarDisponibilidadTipoVehiculo(cantidad, tipoVehiculo);
 
 		} catch (Exception e) {
-
-			throw new RuntimeException(e);
+			log.info("Error en el metodo catidadCarrosActivos");
 		}
 
 		return flag;

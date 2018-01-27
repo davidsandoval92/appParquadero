@@ -1,9 +1,5 @@
 package com.ceiba.helpers;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.LocalTime;
-import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -20,13 +16,13 @@ public class ParqueaderoHelper {
 		return flag;
 	}
 
-	public boolean validarDisponibilidadTipoVehiculo(int Cantidad, String tipovehiculo) {
+	public boolean validarDisponibilidadTipoVehiculo(int cantidad, String tipovehiculo) {
 
 		boolean flag = false;
 
-		if (Cantidad < 20 && tipovehiculo.equals("carro")) {
+		if (cantidad < 20 && tipovehiculo.equals("carro")) {
 			flag = true;
-		} else if (Cantidad < 10 && tipovehiculo.equals("moto")) {
+		} else if (cantidad < 10 && tipovehiculo.equals("moto")) {
 			flag = true;
 		} else {
 			flag = false;
@@ -51,76 +47,49 @@ public class ParqueaderoHelper {
 		return flag;
 	}
 
-	public int procesarCobroCarro(Date fechaIngreso, Date fechaSalida) throws ParseException {
+	public int procesarCobro(Date fechaIngreso, Date fechaSalida, String tipoVehiculo) {
 
 		int precioPagar = 0;
-		final int valorHora = 1000;
-		final int valorDia = 8000;
-        
- 
-        int diferencia=(int) ((fechaSalida.getTime()-fechaIngreso.getTime())/1000);
- 
-        int dias=0;
-        int horas=0;
-        int minutos=0;
-        if(diferencia>86400) {
-            dias=(int)Math.floor(diferencia/86400);
-            diferencia=diferencia-(dias*86400);
-        }
-        if(diferencia>3600) {
-            horas=(int)Math.floor(diferencia/3600);
-            diferencia=diferencia-(horas*3600);
-        }
-        if(diferencia>60) {
-            minutos=(int)Math.floor(diferencia/60);
-            diferencia=diferencia-(minutos*60);
-        }
-        System.out.println("Hay "+dias+" dias, "+horas+" horas, "+minutos+" minutos y "+diferencia+" segundos de diferencia");
-    
-        if(dias > 0){
-        	precioPagar = (dias*valorDia)+(horas*valorHora);
-        }else{
-        	precioPagar = valorHora * horas;
-        }
+		final int valorHoraMoto = 500;
+		final int valorDiaMoto = 600;
+		final int valorHoraCarro = 1000;
+		final int valorDiaCarro = 8000;
 
-        return precioPagar;
+		int diferencia = (int) ((fechaSalida.getTime() - fechaIngreso.getTime()) / 1000);
 
-	}
-	
-	public int procesarCobroMoto(Date fechaIngreso, Date fechaSalida) throws ParseException {
+		int dias = 0;
+		int horas = 0;
+		int minutos = 0;
+		if (diferencia > 86400) {
+			dias = (int) Math.floor(diferencia / 86400);
+			diferencia = diferencia - (dias * 86400);
+		}
+		if (diferencia > 3600) {
+			horas = (int) Math.floor(diferencia / 3600);
+			diferencia = diferencia - (horas * 3600);
+		}
+		if (diferencia > 60) {
+			minutos = (int) Math.floor(diferencia / 60);
+			diferencia = diferencia - (minutos * 60);
+		}
 
-		int precioPagar = 0;
-		final int valorHora = 500;
-		final int valorDia = 600;
-		final int cilidrajeMas = 2000;
-        
- 
-        int diferencia=(int) ((fechaSalida.getTime()-fechaIngreso.getTime())/1000);
- 
-        int dias=0;
-        int horas=0;
-        int minutos=0;
-        if(diferencia>86400) {
-            dias=(int)Math.floor(diferencia/86400);
-            diferencia=diferencia-(dias*86400);
-        }
-        if(diferencia>3600) {
-            horas=(int)Math.floor(diferencia/3600);
-            diferencia=diferencia-(horas*3600);
-        }
-        if(diferencia>60) {
-            minutos=(int)Math.floor(diferencia/60);
-            diferencia=diferencia-(minutos*60);
-        }
-        System.out.println("Hay "+dias+" dias, "+horas+" horas, "+minutos+" minutos y "+diferencia+" segundos de diferencia");
-    
-        if(dias > 0){
-        	precioPagar = (dias*valorDia)+(horas*valorHora);
-        }else{
-        	precioPagar = valorHora * horas;
-        }
+		if (tipoVehiculo.equals("moto")) {
+			if (dias > 0) {
+				precioPagar = (dias * valorDiaMoto) + (horas * valorHoraMoto);
+			} else {
+				precioPagar = valorHoraMoto * horas;
+			}
+		}else{
+			
+			 if(dias > 0){
+				 precioPagar = (dias*valorDiaCarro)+(horas*valorHoraCarro);
+				 }else{
+				 precioPagar = valorHoraCarro * horas;
+				 }
+			
+		}
 
-        return precioPagar;
+		return precioPagar;
 
 	}
 

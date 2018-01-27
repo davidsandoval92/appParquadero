@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,12 +20,6 @@ import com.ceiba.model.Registro;
 import com.ceiba.model.Vehiculo;
 import com.ceiba.service.RegistroService;
 import com.ceiba.service.VehiculoService;
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.WebResource;
-import com.sun.jersey.api.client.config.ClientConfig;
-import com.sun.jersey.api.client.config.DefaultClientConfig;
-import com.sun.jersey.api.json.JSONConfiguration;
 
 @RestController
 @RequestMapping("/registro-service")
@@ -65,7 +60,7 @@ public class RegistroController {
 	}
 
 	@RequestMapping(method = RequestMethod.POST, value = "/guardar-registro")
-	public HashMap<String, String> guardarRegistro(@RequestBody Registro registro) {
+	public Map<String, String> guardarRegistro(@RequestBody Registro registro) {
 
 		HashMap<String, String> mapResponse = new HashMap<>();
 
@@ -83,7 +78,7 @@ public class RegistroController {
 	}
 
 	@RequestMapping(method = RequestMethod.PUT, value = "/actualizar-registro")
-	public HashMap<String, String> actualizarRegistro(@RequestBody Registro registro) {
+	public Map<String, String> actualizarRegistro(@RequestBody Registro registro) {
 
 		HashMap<String, String> mapResponse = new HashMap<>();
 		try {
@@ -98,7 +93,7 @@ public class RegistroController {
 	}
 
 	@RequestMapping(method = RequestMethod.DELETE, value = "/eliminar-registro/{id}")
-	public HashMap<String, String> eliminarRegistro(@PathVariable String id) {
+	public Map<String, String> eliminarRegistro(@PathVariable String id) {
 
 		HashMap<String, String> mapResponse = new HashMap<>();
 		try {
@@ -129,7 +124,7 @@ public class RegistroController {
 				registro.setFechasalida(date);
 				registroService.saveRegistro(registro);
 				ParqueaderoHelper helper = new ParqueaderoHelper();
-				valorGenerado = helper.procesarCobroCarro(registro.getFechaingreso(), registro.getFechasalida());
+				valorGenerado = helper.procesarCobro(registro.getFechaingreso(), registro.getFechasalida(), vehiculo.getTipoVehiculo());
 				registro.setValorpagar(valorGenerado);
 				registro.setEstado("cancelado");
 				registroService.saveRegistro(registro);
@@ -137,7 +132,10 @@ public class RegistroController {
 			} else if (registro != null && vehiculo.getTipoVehiculo().equals(moto)) {
 
 				ParqueaderoHelper helper = new ParqueaderoHelper();
-				valorGenerado = helper.procesarCobroMoto(registro.getFechaingreso(), registro.getFechasalida());
+				valorGenerado = helper.procesarCobro(registro.getFechaingreso(), registro.getFechasalida(), vehiculo.getTipoVehiculo());
+				if(vehiculo.getCilindraje()>500){
+					valorGenerado = valorGenerado +2000;
+				}
 				registro.setValorpagar(valorGenerado);
 				registro.setEstado("cancelado");
 				registroService.saveRegistro(registro);
@@ -167,21 +165,4 @@ public class RegistroController {
 		
 		return mapResponses;
 	}
-	
-//	public List<Registro> obtenerRegistros(String placa) {
-//
-//		String urlService = "http://localhost:8081/vehiculo-service/vehiculobyplaca/"+placa;
-//		Vehiculo vehiculo = new Vehiculo();
-//		
-//		List<Registro> resultado = new ArrayList<>();
-//		ClientConfig clientConfig = new DefaultClientConfig();
-//		clientConfig.getFeatures().put(JSONConfiguration.FEATURE_POJO_MAPPING, Boolean.TRUE);
-//		Client client = Client.create(clientConfig);
-//		WebResource webResource = client.resource(urlService);
-//		vehiculo = webResource.type("application/json").get(Vehiculo.class);
-//
-//		return resultado;
-//
-//	}
-
 }
