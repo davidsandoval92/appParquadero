@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>RegistroServiceImpl.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ServicesAppParking</a> &gt; <a href="index.source.html" class="el_package">com.ceiba.service</a> &gt; <span class="el_source">RegistroServiceImpl.java</span></div><h1>RegistroServiceImpl.java</h1><pre class="source lang-java linenums">package com.ceiba.service;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.ceiba.model.Registro;
+import com.ceiba.repository.RegistroRepository;
+
+@Service
+<span class="nc" id="L12">public class RegistroServiceImpl implements RegistroService {</span>
+
+	@Autowired
+	RegistroRepository registroRepository;
+	
+	@Override
+	public Iterable&lt;Registro&gt; listAllRegistro() {
+<span class="nc" id="L19">		return registroRepository.findAll();</span>
+	}
+
+	@Override
+	public Registro getRegistroById(String idRegistro) {
+<span class="nc" id="L24">		return registroRepository.findOne(idRegistro);</span>
+	}
+
+	@Override
+	public List&lt;Registro&gt; getRegistrosByIdVehiculo(String idVehiculo) {
+<span class="nc" id="L29">		return registroRepository.findByidVehiculo(idVehiculo);</span>
+	}
+
+	@Override
+	public Registro saveRegistro(Registro registro) {
+<span class="nc" id="L34">		return registroRepository.save(registro);</span>
+	}
+
+	@Override
+	public void deleteRegistro(String idRegistro) {
+<span class="nc" id="L39">		registroRepository.delete(idRegistro);</span>
+<span class="nc" id="L40">	}</span>
+
+	@Override
+	public Registro getRegistroByidVehiculoAndEstado(String idVehiculo, String estado) {
+<span class="nc" id="L44">		return registroRepository.findByidVehiculoAndEstado(idVehiculo, estado);</span>
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.1.201405082137</span></div></body></html>

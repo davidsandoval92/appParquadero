@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>Vehiculo.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ServicesAppParking</a> &gt; <a href="index.source.html" class="el_package">com.ceiba.model</a> &gt; <span class="el_source">Vehiculo.java</span></div><h1>Vehiculo.java</h1><pre class="source lang-java linenums">package com.ceiba.model;
+
+import java.io.Serializable;
+import javax.persistence.*;
+
+/**
+ * The persistent class for the vehiculo database table.
+ * 
+ */
+@Entity
+@Table(name = &quot;vehiculo&quot;)
+@NamedQuery(name = &quot;Vehiculo.findAll&quot;, query = &quot;SELECT v FROM Vehiculo v&quot;)
+public class Vehiculo implements Serializable {
+	private static final long serialVersionUID = 1L;
+
+	@Id
+	@Column(name = &quot;ID_VEHICULO&quot;)
+	private String idVehiculo;
+	
+	@Column(name = &quot;Activo&quot;)
+	private int activo;
+
+	@Column(name = &quot;Cilindraje&quot;)
+	private int cilindraje;
+
+	@Column(name = &quot;Color&quot;)
+	private String color;
+
+	@Column(name = &quot;Marca&quot;)
+	private String marca;
+
+	@Column(name = &quot;Placa&quot;)
+	private String placa;
+	
+	@Column(name = &quot;Tipovehiculo&quot;)
+	private String tipoVehiculo;
+	
+<span class="nc" id="L38">	public Vehiculo(){</span>
+		//Constructor Vacio
+<span class="nc" id="L40">	}</span>
+
+<span class="nc" id="L42">	public Vehiculo(String idVehiculo, int activo, int cilindraje, String color, String marca, String placa, String tipoVehiculo) {</span>
+<span class="nc" id="L43">		this.idVehiculo = idVehiculo;</span>
+<span class="nc" id="L44">		this.activo = activo;</span>
+<span class="nc" id="L45">		this.cilindraje = cilindraje;</span>
+<span class="nc" id="L46">		this.color = color;</span>
+<span class="nc" id="L47">		this.marca = marca;</span>
+<span class="nc" id="L48">		this.placa = placa;</span>
+<span class="nc" id="L49">		this.tipoVehiculo = tipoVehiculo;</span>
+<span class="nc" id="L50">	}</span>
+
+<span class="nc" id="L52">	public Vehiculo(String idVehiculo) {</span>
+<span class="nc" id="L53">		this.idVehiculo = idVehiculo;</span>
+<span class="nc" id="L54">	}</span>
+
+	public String getIdVehiculo() {
+<span class="nc" id="L57">		return this.idVehiculo;</span>
+	}
+	
+	public int getActivo() {
+<span class="nc" id="L61">		return this.activo;</span>
+	}
+
+	public void setActivo(int activo) {
+<span class="nc" id="L65">		this.activo = activo;</span>
+<span class="nc" id="L66">	}</span>
+
+	public void setIdVehiculo(String idVehiculo) {
+<span class="nc" id="L69">		this.idVehiculo = idVehiculo;</span>
+<span class="nc" id="L70">	}</span>
+
+	public int getCilindraje() {
+<span class="nc" id="L73">		return this.cilindraje;</span>
+	}
+
+	public void setCilindraje(int cilindraje) {
+<span class="nc" id="L77">		this.cilindraje = cilindraje;</span>
+<span class="nc" id="L78">	}</span>
+
+	public String getColor() {
+<span class="nc" id="L81">		return this.color;</span>
+	}
+
+	public void setColor(String color) {
+<span class="nc" id="L85">		this.color = color;</span>
+<span class="nc" id="L86">	}</span>
+
+	public String getMarca() {
+<span class="nc" id="L89">		return this.marca;</span>
+	}
+
+	public void setMarca(String marca) {
+<span class="nc" id="L93">		this.marca = marca;</span>
+<span class="nc" id="L94">	}</span>
+
+	public String getPlaca() {
+<span class="nc" id="L97">		return this.placa;</span>
+	}
+
+	public void setPlaca(String placa) {
+<span class="nc" id="L101">		this.placa = placa;</span>
+<span class="nc" id="L102">	}</span>
+	
+	public String getTipoVehiculo() {
+<span class="nc" id="L105">		return this.tipoVehiculo;</span>
+	}
+
+	public void setTipoVehiculo(String tipoVehiculo) {
+<span class="nc" id="L109">		this.tipoVehiculo = tipoVehiculo;</span>
+<span class="nc" id="L110">	}</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.1.201405082137</span></div></body></html>
