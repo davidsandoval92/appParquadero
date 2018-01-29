@@ -93,7 +93,7 @@ public class ParqueaderoHelperTest {
 	public void validadPlaca() {
 		// Arrange
 		boolean flag = true;
-		Vehiculo vehiculo = new VehiculoTestDataBuilder().withPlaca("aRM17D").build();
+		Vehiculo vehiculo = new VehiculoTestDataBuilder().withPlaca("bRM17D").build();
 		ParqueaderoHelper pruHelper = new ParqueaderoHelper();
 		// Act
 		flag = pruHelper.validarPlacaLunesDomingos(vehiculo.getPlaca());

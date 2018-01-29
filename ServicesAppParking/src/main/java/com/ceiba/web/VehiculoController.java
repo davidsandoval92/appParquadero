@@ -76,7 +76,9 @@ public class VehiculoController {
 					Registro registro = new Registro();
 					registro.setVehiculo(vehiculo);
 					registro.setEstado("activo");
+					vehiculoService.saveVehiculo(vehiculo);
 					crearRegistro(registro);
+					mapResponse.put(RESPONSE, EXITOT);
 				} else {
 					if (!validacionTipoVehiculo) {
 						mapResponse.put(RESPONSE, "Solo se aceptan tipo de vehiculo como carro o moto.");
@@ -146,17 +148,16 @@ public class VehiculoController {
 		return flag;
 	}
 
-	public Registro crearRegistro(Registro registro) {
+	public String crearRegistro(Registro registro) {
 
 		String urlService = "http://localhost:8081/registro-service/guardar-registro";
-
 		ClientConfig clientConfig = new DefaultClientConfig();
 		clientConfig.getFeatures().put(JSONConfiguration.FEATURE_POJO_MAPPING, Boolean.TRUE);
 		Client client = Client.create(clientConfig);
 		WebResource webResource = client.resource(urlService);
 		ClientResponse response = webResource.type("application/json").post(ClientResponse.class, registro);
-
-		return response.getEntity(Registro.class);
+		log.info("responseClienteService", response);
+		return "Ok";
 
 	}
 

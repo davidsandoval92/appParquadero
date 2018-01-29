@@ -136,4 +136,5 @@ public class RegistroControllerTest {
 		Assert.assertEquals(200, mvcResult.getResponse().getStatus());
 	}
 	
+	
 }
