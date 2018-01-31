@@ -43,6 +43,11 @@ import com.ceiba.repository.RegistroRepository;
 	public Registro getRegistroByidVehiculoAndEstado(String idVehiculo, String estado) {
 <span class="nc" id="L44">		return registroRepository.findByidVehiculoAndEstado(idVehiculo, estado);</span>
 	}
+	
+	@Override
+	public Registro getRegistroByidVehiculoAndEstadoAndIdRegistro(String idVehiculo, String estado, String idRegistro) {
+<span class="nc" id="L49">		return registroRepository.getRegistroByidVehiculoAndEstadoAndIdRegistro(idVehiculo, estado, idRegistro);</span>
+	}
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.1.201405082137</span></div></body></html>

@@ -93,7 +93,7 @@ public class VehiculoController {
 					} else if (!validacionDisponibilidad) {
 						mapResponse.put(RESPONSE, "No hay cupo disponible para: " + vehiculo.getTipoVehiculo());
 					} else if (!validacionPlaca) {
-						mapResponse.put(RESPONSE, "No puede ingresar porque no está en un dia hábil");
+						mapResponse.put(RESPONSE, "No puede ingresar porque no esta en un dia habil");
 					}
 				}
 			} else {

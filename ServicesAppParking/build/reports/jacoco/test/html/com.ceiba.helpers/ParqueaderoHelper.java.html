@@ -3,94 +3,108 @@
 import java.util.Calendar;
 import java.util.Date;
 
-import com.ceiba.model.Vehiculo;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RestController;
 
-<span class="nc" id="L8">public class ParqueaderoHelper {</span>
+import com.ceiba.model.AppParametro;
+import com.ceiba.model.Vehiculo;
+import com.ceiba.service.AppParametrosService;
+
+<span class="nc" id="L13">public class ParqueaderoHelper {</span>
+	
+	
 
 	public boolean validarTipoVehiculo(Vehiculo vehiculo) {
-<span class="nc" id="L11">		boolean flag = false;</span>
-<span class="nc bnc" id="L12" title="All 4 branches missed.">		if (vehiculo.getTipoVehiculo().equals(&quot;carro&quot;) || vehiculo.getTipoVehiculo().equals(&quot;moto&quot;))</span>
-<span class="nc" id="L13">			flag = true;</span>
+<span class="nc" id="L18">		boolean flag = false;</span>
+<span class="nc bnc" id="L19" title="All 4 branches missed.">		if (vehiculo.getTipoVehiculo().equals(&quot;carro&quot;) || vehiculo.getTipoVehiculo().equals(&quot;moto&quot;))</span>
+<span class="nc" id="L20">			flag = true;</span>
 		else
-<span class="nc" id="L15">			flag = false;</span>
-<span class="nc" id="L16">		return flag;</span>
+<span class="nc" id="L22">			flag = false;</span>
+<span class="nc" id="L23">		return flag;</span>
 	}
 
 	public boolean validarDisponibilidadTipoVehiculo(int cantidad, String tipovehiculo) {
 
-<span class="nc" id="L21">		boolean flag = false;</span>
+<span class="nc" id="L28">		boolean flag = false;</span>
 
-<span class="nc bnc" id="L23" title="All 4 branches missed.">		if (cantidad &lt; 20 &amp;&amp; tipovehiculo.equals(&quot;carro&quot;)) {</span>
-<span class="nc" id="L24">			flag = true;</span>
-<span class="nc bnc" id="L25" title="All 4 branches missed.">		} else if (cantidad &lt; 10 &amp;&amp; tipovehiculo.equals(&quot;moto&quot;)) {</span>
-<span class="nc" id="L26">			flag = true;</span>
+<span class="nc bnc" id="L30" title="All 4 branches missed.">		if (cantidad &lt; 20 &amp;&amp; tipovehiculo.equals(&quot;carro&quot;)) {</span>
+<span class="nc" id="L31">			flag = true;</span>
+<span class="nc bnc" id="L32" title="All 4 branches missed.">		} else if (cantidad &lt; 10 &amp;&amp; tipovehiculo.equals(&quot;moto&quot;)) {</span>
+<span class="nc" id="L33">			flag = true;</span>
 		} else {
-<span class="nc" id="L28">			flag = false;</span>
+<span class="nc" id="L35">			flag = false;</span>
 		}
-<span class="nc" id="L30">		return flag;</span>
+<span class="nc" id="L37">		return flag;</span>
 	}
 
 	public boolean validarPlacaLunesDomingos(String placa) {
 
-<span class="nc" id="L35">		boolean flag = true;</span>
-<span class="nc" id="L36">		String letraUp = placa.toUpperCase().substring(0, 1);</span>
-<span class="nc bnc" id="L37" title="All 2 branches missed.">		if (letraUp.equals(&quot;A&quot;)) {</span>
-<span class="nc" id="L38">			Calendar fechaPrestamo = Calendar.getInstance();</span>
-<span class="nc" id="L39">			fechaPrestamo.setTime(new Date());</span>
-<span class="nc bnc" id="L40" title="All 2 branches missed.">			if (fechaPrestamo.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY</span>
-<span class="nc bnc" id="L41" title="All 2 branches missed.">					|| fechaPrestamo.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY) {</span>
-<span class="nc" id="L42">				flag = false;</span>
+<span class="nc" id="L42">		boolean flag = true;</span>
+<span class="nc" id="L43">		String letraUp = placa.toUpperCase().substring(0, 1);</span>
+<span class="nc bnc" id="L44" title="All 2 branches missed.">		if (letraUp.equals(&quot;A&quot;)) {</span>
+<span class="nc" id="L45">			Calendar fechaPrestamo = Calendar.getInstance();</span>
+<span class="nc" id="L46">			fechaPrestamo.setTime(new Date());</span>
+<span class="nc bnc" id="L47" title="All 2 branches missed.">			if (fechaPrestamo.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY</span>
+<span class="nc bnc" id="L48" title="All 2 branches missed.">					|| fechaPrestamo.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY) {</span>
+<span class="nc" id="L49">				flag = false;</span>
 			} else {
-<span class="nc" id="L44">				flag = true;</span>
+<span class="nc" id="L51">				flag = true;</span>
 			}
 		}
-<span class="nc" id="L47">		return flag;</span>
+<span class="nc" id="L54">		return flag;</span>
 	}
 
-	public int procesarCobro(Date fechaIngreso, Date fechaSalida, String tipoVehiculo) {
+	public int procesarCobro(Date fechaIngreso, Date fechaSalida, String tipoVehiculo, int cilindraje , AppParametrosService appParametrosService) {
 
-<span class="nc" id="L52">		int precioPagar = 0;</span>
-<span class="nc" id="L53">		final int valorHoraMoto = 500;</span>
-<span class="nc" id="L54">		final int valorDiaMoto = 600;</span>
-<span class="nc" id="L55">		final int valorHoraCarro = 1000;</span>
-<span class="nc" id="L56">		final int valorDiaCarro = 8000;</span>
+<span class="nc" id="L59">		int precioPagar = 0;</span>
+<span class="nc" id="L60">		int valorHoraMoto = 0;</span>
+<span class="nc" id="L61">		int valorDiaMoto = 0;</span>
+<span class="nc" id="L62">		int valorHoraCarro = 0;</span>
+<span class="nc" id="L63">		int valorDiaCarro = 0;</span>
 
-<span class="nc" id="L58">		int diferencia = (int) ((fechaSalida.getTime() - fechaIngreso.getTime()) / 1000);</span>
+<span class="nc" id="L65">		int diferencia = (int) ((fechaSalida.getTime() - fechaIngreso.getTime()) / 1000);</span>
 
-<span class="nc" id="L60">		int dias = 0;</span>
-<span class="nc" id="L61">		int horas = 0;</span>
-<span class="nc" id="L62">		int minutos = 0;</span>
-<span class="nc bnc" id="L63" title="All 2 branches missed.">		if (diferencia &gt; 86400) {</span>
-<span class="nc" id="L64">			dias = (int) Math.floor((double)diferencia / 86400);</span>
-<span class="nc" id="L65">			diferencia = diferencia - (dias * 86400);</span>
+<span class="nc" id="L67">		int dias = 0;</span>
+<span class="nc" id="L68">		int horas = 0;</span>
+
+<span class="nc bnc" id="L70" title="All 2 branches missed.">		if (diferencia &gt; 32400) {</span>
+<span class="nc" id="L71">			dias = (int) Math.floor((double) diferencia / 32400);</span>
+<span class="nc" id="L72">			diferencia = diferencia - (dias * 32400);</span>
 		}
-<span class="nc bnc" id="L67" title="All 2 branches missed.">		if (diferencia &gt; 3600) {</span>
-<span class="nc" id="L68">			horas = (int) Math.floor((double)diferencia / 3600);</span>
-<span class="nc" id="L69">			diferencia = diferencia - (horas * 3600);</span>
-		}
-<span class="nc bnc" id="L71" title="All 2 branches missed.">		if (diferencia &gt; 60) {</span>
-<span class="nc" id="L72">			minutos = (int) Math.floor((double)diferencia / 60);</span>
-<span class="nc" id="L73">			diferencia = diferencia - (minutos * 60);</span>
+<span class="nc bnc" id="L74" title="All 2 branches missed.">		if (diferencia &gt; 3600) {</span>
+<span class="nc" id="L75">			horas = (int) Math.floor((double) diferencia / 3600);</span>
+<span class="nc" id="L76">			diferencia = diferencia - (horas * 3600);</span>
 		}
 
-<span class="nc bnc" id="L76" title="All 2 branches missed.">		if (tipoVehiculo.equals(&quot;moto&quot;)) {</span>
-<span class="nc bnc" id="L77" title="All 2 branches missed.">			if (dias &gt; 0) {</span>
-<span class="nc" id="L78">				precioPagar = (dias * valorDiaMoto) + (horas * valorHoraMoto);</span>
-			} else {
-<span class="nc" id="L80">				precioPagar = valorHoraMoto * horas;</span>
+<span class="nc bnc" id="L79" title="All 2 branches missed.">		if (tipoVehiculo.equals(&quot;moto&quot;)) {</span>
+<span class="nc bnc" id="L80" title="All 2 branches missed.">			if (dias &gt; 0) {</span>
+<span class="nc" id="L81">				AppParametro appParametro = appParametrosService.getParametroByParametro(&quot;ValorDiaMoto&quot;);</span>
+<span class="nc" id="L82">				valorDiaMoto = Integer.parseInt(appParametro.getValor());</span>
+<span class="nc" id="L83">				precioPagar = (dias * valorDiaMoto);</span>
 			}
-		}else{
-			
-<span class="nc bnc" id="L84" title="All 2 branches missed.">			 if(dias &gt; 0){</span>
-<span class="nc" id="L85">				 precioPagar = (dias*valorDiaCarro)+(horas*valorHoraCarro);</span>
-				 }else{
-<span class="nc" id="L87">				 precioPagar = valorHoraCarro * horas;</span>
-				 }
-			
+<span class="nc bnc" id="L85" title="All 2 branches missed.">			if (horas &gt; 0) {</span>
+<span class="nc" id="L86">				AppParametro appParametro = appParametrosService.getParametroByParametro(&quot;ValorHoraMoto&quot;);</span>
+<span class="nc" id="L87">				valorHoraMoto = Integer.parseInt(appParametro.getValor());</span>
+<span class="nc" id="L88">				precioPagar = precioPagar + (horas * valorHoraMoto);</span>
+			}
+<span class="nc bnc" id="L90" title="All 2 branches missed.">			if (cilindraje &gt; 500) {</span>
+<span class="nc" id="L91">				precioPagar = precioPagar + 2000;</span>
+			}
+		} else {
+
+<span class="nc bnc" id="L95" title="All 2 branches missed.">			if (dias &gt; 0) {</span>
+<span class="nc" id="L96">				AppParametro appParametro = appParametrosService.getParametroByParametro(&quot;ValorDiaCarro&quot;);</span>
+<span class="nc" id="L97">				valorDiaCarro = Integer.parseInt(appParametro.getValor());</span>
+<span class="nc" id="L98">				precioPagar = (dias * valorDiaCarro);</span>
+
+			}
+<span class="nc bnc" id="L101" title="All 2 branches missed.">			if (horas &gt; 0) {</span>
+<span class="nc" id="L102">				AppParametro appParametro = appParametrosService.getParametroByParametro(&quot;ValorHoraCarro&quot;);</span>
+<span class="nc" id="L103">				valorHoraCarro = Integer.parseInt(appParametro.getValor());</span>
+<span class="nc" id="L104">				precioPagar = precioPagar + (horas * valorHoraCarro);</span>
+			}
 		}
-
-<span class="nc" id="L92">		return precioPagar;</span>
-
+<span class="nc" id="L107">		return precioPagar;</span>
 	}
 
 }

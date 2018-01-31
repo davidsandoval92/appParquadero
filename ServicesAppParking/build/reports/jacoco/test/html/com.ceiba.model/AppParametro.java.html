@@ -18,20 +18,20 @@ public class AppParametro implements Serializable {
 	@Column(name=&quot;ID_PARAMETROS&quot;)
 	private String idParametros;
 
-	@Column(name=&quot;valordiacarro&quot;)
-	private double valordiacarro;
+	@Column(name=&quot;parametro&quot;)
+	private String parametro;
 
-	@Column(name=&quot;valordiamoto&quot;)
-	private double valordiamoto;
+	@Column(name=&quot;valor&quot;)
+	private String valor;
 
-	@Column(name=&quot;valorhoracarro&quot;)
-	private double valorhoracarro;
-
-	@Column(name=&quot;valorhoramoto&quot;)
-	private double valorhoramoto;
-
-<span class="nc" id="L33">	public AppParametro() {</span>
-		// Constructor vacio.
+<span class="nc" id="L27">	public AppParametro() {</span>
+		//constructor vacio
+<span class="nc" id="L29">	}</span>
+	
+<span class="nc" id="L31">	public AppParametro(String idParametros, String parametro, String valor) {</span>
+<span class="nc" id="L32">		this.idParametros = idParametros;</span>
+<span class="nc" id="L33">		this.parametro = parametro;</span>
+<span class="nc" id="L34">		this.valor = valor;</span>
 <span class="nc" id="L35">	}</span>
 
 	public String getIdParametros() {
@@ -42,37 +42,21 @@ public class AppParametro implements Serializable {
 <span class="nc" id="L42">		this.idParametros = idParametros;</span>
 <span class="nc" id="L43">	}</span>
 
-	public double getValorDiaCarro() {
-<span class="nc" id="L46">		return this.valordiacarro;</span>
+	public String getParametro() {
+<span class="nc" id="L46">		return this.parametro;</span>
 	}
 
-	public void setValorDiaCarro(double valordiacarro) {
-<span class="nc" id="L50">		this.valordiacarro = valordiacarro;</span>
+	public void setParametro(String parametro) {
+<span class="nc" id="L50">		this.parametro = parametro;</span>
 <span class="nc" id="L51">	}</span>
 
-	public double getValorDiaMoto() {
-<span class="nc" id="L54">		return this.valordiamoto;</span>
+	public String getValor() {
+<span class="nc" id="L54">		return this.valor;</span>
 	}
 
-	public void setValorDiaMoto(double valordiamoto) {
-<span class="nc" id="L58">		this.valordiamoto = valordiamoto;</span>
+	public void setValor(String valor) {
+<span class="nc" id="L58">		this.valor = valor;</span>
 <span class="nc" id="L59">	}</span>
-
-	public double getValorHoraCarro() {
-<span class="nc" id="L62">		return this.valorhoracarro;</span>
-	}
-
-	public void setValorHoraCarro(double valorhoracarro) {
-<span class="nc" id="L66">		this.valorhoracarro = valorhoracarro;</span>
-<span class="nc" id="L67">	}</span>
-
-	public double getValorHoraMoto() {
-<span class="nc" id="L70">		return this.valorhoramoto;</span>
-	}
-
-	public void setValorHoraMoto(double valorhoramoto) {
-<span class="nc" id="L74">		this.valorhoramoto = valorhoramoto;</span>
-<span class="nc" id="L75">	}</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.1.201405082137</span></div></body></html>
