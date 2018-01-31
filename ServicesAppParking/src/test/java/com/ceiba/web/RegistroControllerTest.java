@@ -106,7 +106,7 @@ public class RegistroControllerTest {
 	public void recuperarRegistroByIdTest() throws Exception {
 		// Arrange
 		final String url = "/registro-service/registrobyid/{id}";
-		Registro registro = new RegistroTestDataBuilder().withFechaingreso(null).build();
+		Registro registro = new RegistroTestDataBuilder().withFechaingreso(null).withFechasalida(null).build();
 		Mockito.when(registroRepository.findOne(registro.getIdVehiculo())).thenReturn(registro);
 		// Act
 		MvcResult mvcResult = this.mockMvcc.perform(get(url, "1")).andDo(print()).andExpect(status().isOk())
