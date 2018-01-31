@@ -3,9 +3,16 @@ package com.ceiba.helpers;
 import java.util.Calendar;
 import java.util.Date;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.ceiba.model.AppParametro;
 import com.ceiba.model.Vehiculo;
+import com.ceiba.service.AppParametrosService;
 
 public class ParqueaderoHelper {
+	
+	
 
 	public boolean validarTipoVehiculo(Vehiculo vehiculo) {
 		boolean flag = false;
@@ -47,13 +54,13 @@ public class ParqueaderoHelper {
 		return flag;
 	}
 
-	public int procesarCobro(Date fechaIngreso, Date fechaSalida, String tipoVehiculo, int cilindraje) {
+	public int procesarCobro(Date fechaIngreso, Date fechaSalida, String tipoVehiculo, int cilindraje , AppParametrosService appParametrosService) {
 
 		int precioPagar = 0;
-		final int valorHoraMoto = 500;
-		final int valorDiaMoto = 600;
-		final int valorHoraCarro = 1000;
-		final int valorDiaCarro = 8000;
+		int valorHoraMoto = 0;
+		int valorDiaMoto = 0;
+		int valorHoraCarro = 0;
+		int valorDiaCarro = 0;
 
 		int diferencia = (int) ((fechaSalida.getTime() - fechaIngreso.getTime()) / 1000);
 
@@ -71,9 +78,13 @@ public class ParqueaderoHelper {
 
 		if (tipoVehiculo.equals("moto")) {
 			if (dias > 0) {
+				AppParametro appParametro = appParametrosService.getParametroByParametro("ValorDiaMoto");
+				valorDiaMoto = Integer.parseInt(appParametro.getValor());
 				precioPagar = (dias * valorDiaMoto);
 			}
 			if (horas > 0) {
+				AppParametro appParametro = appParametrosService.getParametroByParametro("ValorHoraMoto");
+				valorHoraMoto = Integer.parseInt(appParametro.getValor());
 				precioPagar = precioPagar + (horas * valorHoraMoto);
 			}
 			if (cilindraje > 500) {
@@ -82,10 +93,14 @@ public class ParqueaderoHelper {
 		} else {
 
 			if (dias > 0) {
+				AppParametro appParametro = appParametrosService.getParametroByParametro("ValorDiaCarro");
+				valorDiaCarro = Integer.parseInt(appParametro.getValor());
 				precioPagar = (dias * valorDiaCarro);
 
 			}
 			if (horas > 0) {
+				AppParametro appParametro = appParametrosService.getParametroByParametro("ValorHoraCarro");
+				valorHoraCarro = Integer.parseInt(appParametro.getValor());
 				precioPagar = precioPagar + (horas * valorHoraCarro);
 			}
 		}

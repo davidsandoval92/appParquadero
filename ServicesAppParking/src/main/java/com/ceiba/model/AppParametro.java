@@ -18,20 +18,20 @@ public class AppParametro implements Serializable {
 	@Column(name="ID_PARAMETROS")
 	private String idParametros;
 
-	@Column(name="valordiacarro")
-	private double valordiacarro;
+	@Column(name="parametro")
+	private String parametro;
 
-	@Column(name="valordiamoto")
-	private double valordiamoto;
-
-	@Column(name="valorhoracarro")
-	private double valorhoracarro;
-
-	@Column(name="valorhoramoto")
-	private double valorhoramoto;
+	@Column(name="valor")
+	private String valor;
 
 	public AppParametro() {
-		// Constructor vacio.
+		//constructor vacio
+	}
+	
+	public AppParametro(String idParametros, String parametro, String valor) {
+		this.idParametros = idParametros;
+		this.parametro = parametro;
+		this.valor = valor;
 	}
 
 	public String getIdParametros() {
@@ -42,36 +42,20 @@ public class AppParametro implements Serializable {
 		this.idParametros = idParametros;
 	}
 
-	public double getValorDiaCarro() {
-		return this.valordiacarro;
+	public String getParametro() {
+		return this.parametro;
 	}
 
-	public void setValorDiaCarro(double valordiacarro) {
-		this.valordiacarro = valordiacarro;
+	public void setParametro(String parametro) {
+		this.parametro = parametro;
 	}
 
-	public double getValorDiaMoto() {
-		return this.valordiamoto;
+	public String getValor() {
+		return this.valor;
 	}
 
-	public void setValorDiaMoto(double valordiamoto) {
-		this.valordiamoto = valordiamoto;
-	}
-
-	public double getValorHoraCarro() {
-		return this.valorhoracarro;
-	}
-
-	public void setValorHoraCarro(double valorhoracarro) {
-		this.valorhoracarro = valorhoracarro;
-	}
-
-	public double getValorHoraMoto() {
-		return this.valorhoramoto;
-	}
-
-	public void setValorHoraMoto(double valorhoramoto) {
-		this.valorhoramoto = valorhoramoto;
+	public void setValor(String valor) {
+		this.valor = valor;
 	}
 
 }

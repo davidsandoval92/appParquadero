@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ceiba.helpers.ParqueaderoHelper;
 import com.ceiba.model.Registro;
 import com.ceiba.model.Vehiculo;
+import com.ceiba.service.AppParametrosService;
 import com.ceiba.service.RegistroService;
 import com.ceiba.service.VehiculoService;
 
@@ -37,6 +38,9 @@ public class RegistroController {
 
 	@Autowired
 	private VehiculoService vehiculoService;
+
+	@Autowired
+	private AppParametrosService appParametrosService;
 
 	@CrossOrigin(origins = "*")
 	@RequestMapping(method = RequestMethod.GET, value = "/registros")
@@ -143,7 +147,7 @@ public class RegistroController {
 				registro.setFechasalida(date);
 				registroService.saveRegistro(registro);
 				ParqueaderoHelper helper = new ParqueaderoHelper();
-				valorGenerado = helper.procesarCobro(registro.getFechaingreso(), registro.getFechasalida(), vehiculo.getTipoVehiculo(), vehiculo.getCilindraje());
+				valorGenerado = helper.procesarCobro(registro.getFechaingreso(), registro.getFechasalida(), vehiculo.getTipoVehiculo(), vehiculo.getCilindraje(), appParametrosService);
 				registro.setValorpagar(valorGenerado);
 				registro.setEstado("cancelado");
 				registroService.saveRegistro(registro);
@@ -155,7 +159,7 @@ public class RegistroController {
 				registro.setFechasalida(date);
 				registroService.saveRegistro(registro);
 				ParqueaderoHelper helper = new ParqueaderoHelper();
-				valorGenerado = helper.procesarCobro(registro.getFechaingreso(), registro.getFechasalida(), vehiculo.getTipoVehiculo(), vehiculo.getCilindraje());
+				valorGenerado = helper.procesarCobro(registro.getFechaingreso(), registro.getFechasalida(), vehiculo.getTipoVehiculo(), vehiculo.getCilindraje(), appParametrosService);
 				if(vehiculo.getCilindraje()>500){
 					valorGenerado = valorGenerado +2000;
 				}

@@ -29,8 +29,11 @@ import org.springframework.web.context.WebApplicationContext;
 
 import com.ceiba.model.Registro;
 import com.ceiba.model.Vehiculo;
+import com.ceiba.repository.AppParametrosRepository;
 import com.ceiba.repository.RegistroRepository;
 import com.ceiba.repository.VehiculoRepository;
+import com.ceiba.service.AppParametrosService;
+import com.ceiba.service.AppParametrosServiceImpl;
 import com.ceiba.service.RegistroService;
 import com.ceiba.service.RegistroServiceImpl;
 import com.ceiba.service.VehiculoService;
@@ -60,6 +63,15 @@ public class RegistroControllerTest {
 			return new RegistroServiceImpl();
 		}
 	}
+	
+	@TestConfiguration
+	static class AppParametroImplTestContextConfiguration {
+
+		@Bean
+		public AppParametrosService appParametro() {
+			return new AppParametrosServiceImpl();
+		}
+	}
 
 	@Autowired
 	private MockMvc mockMvcc;
@@ -81,6 +93,9 @@ public class RegistroControllerTest {
 	
 	@MockBean
 	private RegistroRepository registroRepository;
+	
+	@MockBean
+	private AppParametrosRepository AppParametrosRepository;
 
 	@Before
 	public void setup() throws Exception {
