@@ -11,4 +11,6 @@ public interface RegistroRepository extends CrudRepository<Registro, String> {
 	List<Registro> findByidVehiculo(String idVehiculo);
 	
 	Registro findByidVehiculoAndEstado(String idVehiculo, String estado);
+	
+	Registro getRegistroByidVehiculoAndEstadoAndIdRegistro(String idVehiculo, String estado, String idRegistro);
 }

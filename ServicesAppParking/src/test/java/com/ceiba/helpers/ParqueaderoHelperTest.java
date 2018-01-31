@@ -107,6 +107,7 @@ public class ParqueaderoHelperTest {
 		// Arrange
 		int valorPagar = 0;
 		int valorEsperado = 2000;
+		int cilindraje = 2000;
 		final String tipoVehiculoC = "carro";
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd H:m:s");
 		Date fechaInicial=dateFormat.parse("2017-01-15 23:00:00");
@@ -114,7 +115,7 @@ public class ParqueaderoHelperTest {
 		ParqueaderoHelper pruHelper = new ParqueaderoHelper();
 
 		// Act
-		valorPagar = pruHelper.procesarCobro(fechaInicial, fechaFinal, tipoVehiculoC);
+		valorPagar = pruHelper.procesarCobro(fechaInicial, fechaFinal, tipoVehiculoC, cilindraje);
 		// Assert
 		Assert.assertEquals(valorPagar, valorEsperado);
 	}
@@ -123,7 +124,8 @@ public class ParqueaderoHelperTest {
 	public void validarCobroDiaCarro() throws ParseException {
 		// Arrange
 		int valorPagar = 0;
-		int valorEsperado = 12000;
+		int valorEsperado = 25000;
+		int cilindraje = 2000;
 		final String tipoVehiculoC = "carro";
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd H:m:s");
 		Date fechaInicial=dateFormat.parse("2017-01-15 07:00:00");
@@ -131,7 +133,7 @@ public class ParqueaderoHelperTest {
 		ParqueaderoHelper pruHelper = new ParqueaderoHelper();
 
 		// Act
-		valorPagar = pruHelper.procesarCobro(fechaInicial, fechaFinal, tipoVehiculoC);
+		valorPagar = pruHelper.procesarCobro(fechaInicial, fechaFinal, tipoVehiculoC, cilindraje);
 		// Assert
 		Assert.assertEquals(valorPagar, valorEsperado);
 	}
@@ -140,7 +142,8 @@ public class ParqueaderoHelperTest {
 	public void validarCobroHoraMoto() throws ParseException {
 		
 		int valorPagar = 0;
-		int valorEsperado = 2000;
+		int valorEsperado = 4000;
+		int cilindraje = 2000;
 		final String tipoVehiculoM = "moto";
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd H:m:s");
 		Date fechaInicial=dateFormat.parse("2017-01-15 07:00:00");
@@ -148,7 +151,7 @@ public class ParqueaderoHelperTest {
 		ParqueaderoHelper pruHelper = new ParqueaderoHelper();
 
 		// Act
-		valorPagar = pruHelper.procesarCobro(fechaInicial, fechaFinal, tipoVehiculoM);
+		valorPagar = pruHelper.procesarCobro(fechaInicial, fechaFinal, tipoVehiculoM, cilindraje);
 		// Assert
 		Assert.assertEquals(valorPagar, valorEsperado);
 	}
@@ -157,7 +160,8 @@ public class ParqueaderoHelperTest {
 	public void validarCobroDiaMoto() throws ParseException {
 		
 		int valorPagar = 0;
-		int valorEsperado = 2600;
+		int valorEsperado = 4300;
+		int cilindraje = 2000;
 		final String tipoVehiculoM = "moto";
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd H:m:s");
 		Date fechaInicial=dateFormat.parse("2017-01-15 07:00:00");
@@ -165,7 +169,7 @@ public class ParqueaderoHelperTest {
 		ParqueaderoHelper pruHelper = new ParqueaderoHelper();
 
 		// Act
-		valorPagar = pruHelper.procesarCobro(fechaInicial, fechaFinal, tipoVehiculoM);
+		valorPagar = pruHelper.procesarCobro(fechaInicial, fechaFinal, tipoVehiculoM, cilindraje);
 		// Assert
 		Assert.assertEquals(valorPagar, valorEsperado);
 	}

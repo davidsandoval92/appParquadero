@@ -1,6 +1,7 @@
 package com.ceiba.web;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,7 +36,8 @@ public class VehiculoController {
 
 	@Autowired
 	private VehiculoService vehiculoService;
-
+	
+	@CrossOrigin(origins = "*")
 	@RequestMapping(method = RequestMethod.GET, value = "/vehiculos")
 	public Iterable<Vehiculo> recuperarVehiculos() {
 
@@ -44,6 +46,7 @@ public class VehiculoController {
 		return vehiculo;
 	}
 
+	@CrossOrigin(origins = "*", allowCredentials = "true")
 	@RequestMapping(method = RequestMethod.GET, value = "/vehiculo/{idVehiculo}")
 	public Vehiculo recuperarVehiculo(@PathVariable String idVehiculo) {
 
@@ -52,6 +55,7 @@ public class VehiculoController {
 		return vehiculo;
 	}
 
+	@CrossOrigin(origins = "*")
 	@RequestMapping(method = RequestMethod.GET, value = "/vehiculobyplaca/{placa}")
 	public Vehiculo recuperarVehiculoByPlaca(@PathVariable String placa) {
 
@@ -60,6 +64,7 @@ public class VehiculoController {
 		return vehiculo;
 	}
 	
+	@CrossOrigin(origins = "*")
 	@RequestMapping(method = RequestMethod.POST, value = "/guardar-vehiculo", produces = { "application/json" })
 	public Map<String, String> guardarVehiculo(@RequestBody Vehiculo vehiculo) {
 
@@ -68,9 +73,12 @@ public class VehiculoController {
 		boolean validacionTipoVehiculo = helper.validarTipoVehiculo(vehiculo);
 		boolean validacionDisponibilidad = catidadCarrosActivos(vehiculo.getTipoVehiculo());
 		boolean validacionPlaca = helper.validarPlacaLunesDomingos(vehiculo.getPlaca());
+		Vehiculo vehiculoRecu =  vehiculoService.getVehiculoByPlaca(vehiculo.getPlaca());
 		try {
-			if (vehiculoService.getVehiculoByPlaca(vehiculo.getPlaca()) == null) {
+			if (vehiculoRecu == null) {
 				if (validacionTipoVehiculo && validacionDisponibilidad && validacionPlaca) {
+					vehiculo.setIdVehiculo(java.util.UUID.randomUUID().toString().replaceAll("-", ""));
+					vehiculo.setActivo(1);
 					String formattedPlaca = vehiculo.getPlaca().toUpperCase();
 					vehiculo.setPlaca(formattedPlaca);
 					Registro registro = new Registro();
@@ -89,16 +97,23 @@ public class VehiculoController {
 					}
 				}
 			} else {
-				mapResponse.put("Respuesta", "El vehiculo ya se encuentra registrado");
+				vehiculoRecu.setActivo(1);
+				Registro registro = new Registro();
+				registro.setVehiculo(vehiculoRecu);
+				registro.setEstado("activo");
+				vehiculoService.saveVehiculo(vehiculoRecu);
+				crearRegistro(registro);
+				mapResponse.put(RESPONSE, "El vehiculo ya se encuentra registrado, se creo un nuevo registro");
 				return mapResponse;
 			}
 		} catch (Exception e) {
 			log.error(ERRORT);
-			mapResponse.put("RespuestaError", "Ocurrio un error");
+			mapResponse.put(RESPONSE, "Ocurrio un error");
 		}
 		return mapResponse;
 	}
 
+	@CrossOrigin(origins = "*")
 	@RequestMapping(method = RequestMethod.PUT, value = "/actualizar-vehiculo")
 	public Map<String, String> actualizarVehiculo(@RequestBody Vehiculo vehiculo) {
 
@@ -108,12 +123,13 @@ public class VehiculoController {
 			mapResponse.put(RESPONSE, "Vehiculo actualizado correctamente");
 		} catch (Exception e) {
 			log.error(ERRORT);
-			mapResponse.put("ResponseError", "No se actualizo el vehiculo");
+			mapResponse.put(RESPONSE, "No se actualizo el vehiculo");
 		}
 		log.info(EXITOT);
 		return mapResponse;
 	}
 
+	@CrossOrigin(origins = "*")
 	@RequestMapping(method = RequestMethod.DELETE, value = "/eliminar-vehiculo/{id}")
 	public Map<String, String> eliminarVehiculo(@PathVariable String id) {
 
@@ -124,7 +140,7 @@ public class VehiculoController {
 			mapResponse.put(RESPONSE, "Vehiculo eliminado");
 		} catch (Exception e) {
 			log.error(e.getMessage());
-			mapResponse.put("ResponseError", "No se elimino el vehiculo, revisar error");
+			mapResponse.put(RESPONSE, "No se elimino el vehiculo, revisar error");
 		}
 		return mapResponse;
 	}
@@ -148,9 +164,10 @@ public class VehiculoController {
 		return flag;
 	}
 
+	@CrossOrigin(origins = "*")
 	public String crearRegistro(Registro registro) {
 
-		String urlService = "http://localhost:8081/registro-service/guardar-registro";
+		String urlService = "http://localhost:8080/registro-service/guardar-registro";
 		ClientConfig clientConfig = new DefaultClientConfig();
 		clientConfig.getFeatures().put(JSONConfiguration.FEATURE_POJO_MAPPING, Boolean.TRUE);
 		Client client = Client.create(clientConfig);

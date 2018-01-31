@@ -16,5 +16,7 @@ public interface RegistroService {
 	void deleteRegistro(String id);
 	
 	Registro getRegistroByidVehiculoAndEstado(String idVehiculo, String estado);
+	
+	Registro getRegistroByidVehiculoAndEstadoAndIdRegistro(String idVehiculo, String estado, String idRegistro);
 
 }

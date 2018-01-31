@@ -106,6 +106,8 @@ public class RegistroControllerTest {
 	public void recuperarRegistroByIdTest() throws Exception {
 		// Arrange
 		final String url = "/registro-service/registrobyid/{id}";
+		Registro registro = new RegistroTestDataBuilder().withFechaingreso(null).build();
+		Mockito.when(registroRepository.findOne(registro.getIdVehiculo())).thenReturn(registro);
 		// Act
 		MvcResult mvcResult = this.mockMvcc.perform(get(url, "1")).andDo(print()).andExpect(status().isOk())
 				.andReturn();
@@ -141,14 +143,15 @@ public class RegistroControllerTest {
 	@Test
 	public void pagarTicketCarroTest() throws Exception {
 		// Arrange
-		final String url = "/registro-service/pagar-ticket/{placa}";
+		final String url = "/registro-service/pagar-ticket/{placa}/{idRegistro}";
 		Vehiculo vehiculo = new VehiculoTestDataBuilder().withPlaca("NCY505").build();
 		Mockito.when(vehiculoRepository.findByplaca("NCY505")).thenReturn(vehiculo);
 		Registro registro = new RegistroTestDataBuilder().build();
 		Mockito.when(registroService.getRegistroByidVehiculoAndEstado(vehiculo.getIdVehiculo(), "activo")).thenReturn(registro);
+		Mockito.when(registroService.getRegistroByidVehiculoAndEstadoAndIdRegistro(vehiculo.getIdVehiculo(), "activo",vehiculo.getIdVehiculo())).thenReturn(registro);
 		
 		// Act
-		MvcResult mvcResult = this.mockMvcc.perform(get(url, "NCY505")).andDo(print()).andExpect(status().isOk())
+		MvcResult mvcResult = this.mockMvcc.perform(get(url, "NCY505", "123")).andDo(print()).andExpect(status().isOk())
 				.andReturn();
 		// Assert
 		Assert.assertEquals(200, mvcResult.getResponse().getStatus());
@@ -157,14 +160,14 @@ public class RegistroControllerTest {
 	@Test
 	public void pagarTicketMotoTest() throws Exception {
 		// Arrange
-		final String url = "/registro-service/pagar-ticket/{placa}";
+		final String url = "/registro-service/pagar-ticket/{placa}/{idRegistro}";
 		Vehiculo vehiculo = new VehiculoTestDataBuilder().withPlaca("NCY505").withTipoVehiculo("moto").build();
 		Mockito.when(vehiculoRepository.findByplaca("NCY505")).thenReturn(vehiculo);
 		Registro registro = new RegistroTestDataBuilder().build();
 		Mockito.when(registroService.getRegistroByidVehiculoAndEstado(vehiculo.getIdVehiculo(), "activo")).thenReturn(registro);
 		
 		// Act
-		MvcResult mvcResult = this.mockMvcc.perform(get(url, "NCY505")).andDo(print()).andExpect(status().isOk())
+		MvcResult mvcResult = this.mockMvcc.perform(get(url, "NCY505","123")).andDo(print()).andExpect(status().isOk())
 				.andReturn();
 		// Assert
 		Assert.assertEquals(200, mvcResult.getResponse().getStatus());

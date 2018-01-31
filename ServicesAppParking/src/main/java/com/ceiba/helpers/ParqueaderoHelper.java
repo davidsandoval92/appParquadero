@@ -47,7 +47,7 @@ public class ParqueaderoHelper {
 		return flag;
 	}
 
-	public int procesarCobro(Date fechaIngreso, Date fechaSalida, String tipoVehiculo) {
+	public int procesarCobro(Date fechaIngreso, Date fechaSalida, String tipoVehiculo, int cilindraje) {
 
 		int precioPagar = 0;
 		final int valorHoraMoto = 500;
@@ -59,38 +59,37 @@ public class ParqueaderoHelper {
 
 		int dias = 0;
 		int horas = 0;
-		int minutos = 0;
-		if (diferencia > 86400) {
-			dias = (int) Math.floor((double)diferencia / 86400);
-			diferencia = diferencia - (dias * 86400);
+
+		if (diferencia > 32400) {
+			dias = (int) Math.floor((double) diferencia / 32400);
+			diferencia = diferencia - (dias * 32400);
 		}
 		if (diferencia > 3600) {
-			horas = (int) Math.floor((double)diferencia / 3600);
+			horas = (int) Math.floor((double) diferencia / 3600);
 			diferencia = diferencia - (horas * 3600);
-		}
-		if (diferencia > 60) {
-			minutos = (int) Math.floor((double)diferencia / 60);
-			diferencia = diferencia - (minutos * 60);
 		}
 
 		if (tipoVehiculo.equals("moto")) {
 			if (dias > 0) {
-				precioPagar = (dias * valorDiaMoto) + (horas * valorHoraMoto);
-			} else {
-				precioPagar = valorHoraMoto * horas;
+				precioPagar = (dias * valorDiaMoto);
 			}
-		}else{
-			
-			 if(dias > 0){
-				 precioPagar = (dias*valorDiaCarro)+(horas*valorHoraCarro);
-				 }else{
-				 precioPagar = valorHoraCarro * horas;
-				 }
-			
+			if (horas > 0) {
+				precioPagar = precioPagar + (horas * valorHoraMoto);
+			}
+			if (cilindraje > 500) {
+				precioPagar = precioPagar + 2000;
+			}
+		} else {
+
+			if (dias > 0) {
+				precioPagar = (dias * valorDiaCarro);
+
+			}
+			if (horas > 0) {
+				precioPagar = precioPagar + (horas * valorHoraCarro);
+			}
 		}
-
 		return precioPagar;
-
 	}
 
 }

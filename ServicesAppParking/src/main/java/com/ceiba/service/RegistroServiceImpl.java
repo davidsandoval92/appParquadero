@@ -43,5 +43,10 @@ public class RegistroServiceImpl implements RegistroService {
 	public Registro getRegistroByidVehiculoAndEstado(String idVehiculo, String estado) {
 		return registroRepository.findByidVehiculoAndEstado(idVehiculo, estado);
 	}
+	
+	@Override
+	public Registro getRegistroByidVehiculoAndEstadoAndIdRegistro(String idVehiculo, String estado, String idRegistro) {
+		return registroRepository.getRegistroByidVehiculoAndEstadoAndIdRegistro(idVehiculo, estado, idRegistro);
+	}
 
 }
