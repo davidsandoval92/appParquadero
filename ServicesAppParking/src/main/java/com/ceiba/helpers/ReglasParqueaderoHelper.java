@@ -3,17 +3,19 @@ package com.ceiba.helpers;
 import java.util.Calendar;
 import java.util.Date;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.ceiba.model.AppParametro;
 import com.ceiba.model.Vehiculo;
 import com.ceiba.service.AppParametrosService;
 
-public class ParqueaderoHelper {
-	
-	
+public class ReglasParqueaderoHelper {
 
+	/**
+	 * Metodo que valida la regla de negocio tipo de vehiculo permitidos en le
+	 * parqueadero
+	 * 
+	 * @param vehiculo
+	 * @return
+	 */
 	public boolean validarTipoVehiculo(Vehiculo vehiculo) {
 		boolean flag = false;
 		if (vehiculo.getTipoVehiculo().equals("carro") || vehiculo.getTipoVehiculo().equals("moto"))
@@ -23,6 +25,14 @@ public class ParqueaderoHelper {
 		return flag;
 	}
 
+	/**
+	 * Metodo que valida la regla de negocio sobre la disponibilidad del
+	 * parqueadero segun el tipo de vehiculo.
+	 * 
+	 * @param cantidad
+	 * @param tipovehiculo
+	 * @return
+	 */
 	public boolean validarDisponibilidadTipoVehiculo(int cantidad, String tipovehiculo) {
 
 		boolean flag = false;
@@ -37,6 +47,13 @@ public class ParqueaderoHelper {
 		return flag;
 	}
 
+	/**
+	 * Metodo que valida la regla de negocio sobre los dias permitidos para las
+	 * placas que comienzan por la letra A.
+	 * 
+	 * @param placa
+	 * @return
+	 */
 	public boolean validarPlacaLunesDomingos(String placa) {
 
 		boolean flag = true;
@@ -54,7 +71,19 @@ public class ParqueaderoHelper {
 		return flag;
 	}
 
-	public int procesarCobro(Date fechaIngreso, Date fechaSalida, String tipoVehiculo, int cilindraje , AppParametrosService appParametrosService) {
+	/**
+	 * Metodo que valida la regla de negocio sobre el cobro y valor de la
+	 * fraccion segun el tipo de vehiculo y el cilindaje para motos.
+	 * 
+	 * @param fechaIngreso
+	 * @param fechaSalida
+	 * @param tipoVehiculo
+	 * @param cilindraje
+	 * @param appParametrosService
+	 * @return
+	 */
+	public int procesarCobro(Date fechaIngreso, Date fechaSalida, String tipoVehiculo, int cilindraje,
+			AppParametrosService appParametrosService) {
 
 		int precioPagar = 0;
 		int valorHoraMoto = 0;
@@ -73,7 +102,6 @@ public class ParqueaderoHelper {
 		}
 		if (diferencia > 3600) {
 			horas = (int) Math.floor((double) diferencia / 3600);
-			diferencia = diferencia - (horas * 3600);
 		}
 
 		if (tipoVehiculo.equals("moto")) {

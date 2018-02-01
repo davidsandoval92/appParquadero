@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>SistemaRegistroHelper.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ServicesAppParking</a> &gt; <a href="index.source.html" class="el_package">com.ceiba.helpers</a> &gt; <span class="el_source">SistemaRegistroHelper.java</span></div><h1>SistemaRegistroHelper.java</h1><pre class="source lang-java linenums">package com.ceiba.helpers;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.web.bind.annotation.CrossOrigin;
+
+import com.ceiba.model.Registro;
+import com.ceiba.model.Vehiculo;
+import com.ceiba.service.AppParametrosService;
+import com.ceiba.service.RegistroService;
+import com.ceiba.service.VehiculoService;
+import com.ceiba.web.VehiculoController;
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.ClientResponse;
+import com.sun.jersey.api.client.WebResource;
+import com.sun.jersey.api.client.config.ClientConfig;
+import com.sun.jersey.api.client.config.DefaultClientConfig;
+import com.sun.jersey.api.json.JSONConfiguration;
+
+<span class="nc" id="L24">public class SistemaRegistroHelper {</span>
+
+	private static final String RESPONSE = &quot;Response&quot;;
+<span class="nc" id="L27">	private static final Logger log = LoggerFactory.getLogger(VehiculoController.class);</span>
+	private static final String ERRORT = &quot;Fallo al guardar el registro del vehiculo&quot;;
+	private static final String EXITOT = &quot;Vehiculo guardado correctamente&quot;;
+	private static final String ESTADO_ACTIVO = &quot;activo&quot;;
+
+	/**
+	 * Metodo para validar el pago de un registro(ticket).
+	 * 
+	 * @param vehiculoService
+	 * @param registroService
+	 * @param appParametrosService
+	 * @param placa
+	 * @param idRegistro
+	 * @return
+	 */
+	public Map&lt;Object, Object&gt; validacionesPagarTicket(VehiculoService vehiculoService, RegistroService registroService,
+			AppParametrosService appParametrosService, String placa, String idRegistro) {
+<span class="nc" id="L44">		Registro registro = new Registro();</span>
+<span class="nc" id="L45">		Vehiculo vehiculo = new Vehiculo();</span>
+
+<span class="nc" id="L47">		int valorGenerado = 0;</span>
+<span class="nc" id="L48">		Date date = new Date();</span>
+<span class="nc" id="L49">		HashMap&lt;Object, Object&gt; response = new HashMap&lt;&gt;();</span>
+
+		try {
+<span class="nc" id="L52">			vehiculo = vehiculoService.getVehiculoByPlaca(placa);</span>
+<span class="nc bnc" id="L53" title="All 2 branches missed.">			if (vehiculo.getActivo() == 1) {</span>
+<span class="nc" id="L54">				registro = registroService.getRegistroByidVehiculoAndEstadoAndIdRegistro(vehiculo.getIdVehiculo(),</span>
+						ESTADO_ACTIVO, idRegistro);
+
+<span class="nc bnc" id="L57" title="All 4 branches missed.">				if (registro != null &amp;&amp; vehiculo.getTipoVehiculo().equals(&quot;carro&quot;)) {</span>
+<span class="nc" id="L58">					registro.setFechasalida(date);</span>
+<span class="nc" id="L59">					registroService.saveRegistro(registro);</span>
+<span class="nc" id="L60">					ReglasParqueaderoHelper helper = new ReglasParqueaderoHelper();</span>
+<span class="nc" id="L61">					valorGenerado = helper.procesarCobro(registro.getFechaingreso(), registro.getFechasalida(),</span>
+<span class="nc" id="L62">							vehiculo.getTipoVehiculo(), vehiculo.getCilindraje(), appParametrosService);</span>
+<span class="nc" id="L63">					registro.setValorpagar(valorGenerado);</span>
+<span class="nc" id="L64">					registro.setEstado(&quot;cancelado&quot;);</span>
+<span class="nc" id="L65">					registroService.saveRegistro(registro);</span>
+<span class="nc" id="L66">					vehiculo.setActivo(0);</span>
+<span class="nc" id="L67">					vehiculoService.saveVehiculo(vehiculo);</span>
+<span class="nc" id="L68">					response.put(RESPONSE, &quot;Cobro exitoso para la placa: &quot; + vehiculo.getPlaca());</span>
+
+<span class="nc bnc" id="L70" title="All 4 branches missed.">				} else if (registro != null &amp;&amp; vehiculo.getTipoVehiculo().equals(&quot;moto&quot;)) {</span>
+<span class="nc" id="L71">					registro.setFechasalida(date);</span>
+<span class="nc" id="L72">					registroService.saveRegistro(registro);</span>
+<span class="nc" id="L73">					ReglasParqueaderoHelper helper = new ReglasParqueaderoHelper();</span>
+<span class="nc" id="L74">					valorGenerado = helper.procesarCobro(registro.getFechaingreso(), registro.getFechasalida(),</span>
+<span class="nc" id="L75">							vehiculo.getTipoVehiculo(), vehiculo.getCilindraje(), appParametrosService);</span>
+<span class="nc bnc" id="L76" title="All 2 branches missed.">					if (vehiculo.getCilindraje() &gt; 500) {</span>
+<span class="nc" id="L77">						valorGenerado = valorGenerado + 2000;</span>
+					}
+<span class="nc" id="L79">					registro.setValorpagar(valorGenerado);</span>
+<span class="nc" id="L80">					registro.setEstado(&quot;cancelado&quot;);</span>
+<span class="nc" id="L81">					registroService.saveRegistro(registro);</span>
+<span class="nc" id="L82">					vehiculo.setActivo(0);</span>
+<span class="nc" id="L83">					vehiculoService.saveVehiculo(vehiculo);</span>
+<span class="nc" id="L84">					response.put(RESPONSE, &quot;Cobro exitoso para la placa: &quot; + vehiculo.getPlaca());</span>
+<span class="nc" id="L85">				} else {</span>
+<span class="nc" id="L86">					response.put(RESPONSE, &quot;Ese registro ya esta cancelado para la placa: &quot; + vehiculo.getPlaca());</span>
+				}
+			} else {
+<span class="nc" id="L89">				response.put(RESPONSE, &quot;No tiene registros activos para la placa: &quot; + vehiculo.getPlaca());</span>
+			}
+<span class="nc" id="L91">		} catch (Exception e) {</span>
+<span class="nc" id="L92">			log.error(e.getMessage());</span>
+<span class="nc" id="L93">		}</span>
+<span class="nc" id="L94">		return response;</span>
+	}
+
+	/**
+	 * Metodo que valida las reglas de negocio para guardar un registro(ticket).
+	 * 
+	 * @param registro
+	 * @param registroService
+	 * @return
+	 */
+	public Map&lt;String, String&gt; guardarRegistroHelper(Registro registro, RegistroService registroService) {
+
+<span class="nc" id="L106">		HashMap&lt;String, String&gt; mapResponse = new HashMap&lt;&gt;();</span>
+
+<span class="nc" id="L108">		registro.setIdRegistro(java.util.UUID.randomUUID().toString().replaceAll(&quot;-&quot;, &quot;&quot;));</span>
+<span class="nc" id="L109">		java.util.Date fecha = new Date();</span>
+<span class="nc" id="L110">		registro.setFechaingreso(fecha);</span>
+		try {
+<span class="nc" id="L112">			registroService.saveRegistro(registro);</span>
+<span class="nc" id="L113">			mapResponse.put(&quot;Respuesta&quot;, &quot;Registro guardado correctamente&quot;);</span>
+<span class="nc" id="L114">		} catch (Exception e) {</span>
+<span class="nc" id="L115">			log.error(ERRORT);</span>
+<span class="nc" id="L116">			mapResponse.put(&quot;RespuestaError&quot;, &quot;Ocurrio un error, revisar log&quot;);</span>
+<span class="nc" id="L117">		}</span>
+<span class="nc" id="L118">		return mapResponse;</span>
+	}
+
+	/**
+	 * Metodo que valida las reglas de negocio para guardar la informacion de un
+	 * vehiculo.
+	 * 
+	 * @param vehiculo
+	 * @param vehiculoService
+	 * @return
+	 */
+	public Map&lt;String, String&gt; guardarVehiculoHelper(Vehiculo vehiculo, VehiculoService vehiculoService) {
+
+<span class="nc" id="L131">		HashMap&lt;String, String&gt; mapResponse = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L132">		ReglasParqueaderoHelper helper = new ReglasParqueaderoHelper();</span>
+<span class="nc" id="L133">		SistemaConsultasHelper consultasH = new SistemaConsultasHelper();</span>
+<span class="nc" id="L134">		boolean validacionTipoVehiculo = helper.validarTipoVehiculo(vehiculo);</span>
+<span class="nc" id="L135">		boolean validacionDisponibilidad = consultasH.catidadCarrosActivos(vehiculo.getTipoVehiculo(), vehiculoService);</span>
+<span class="nc" id="L136">		boolean validacionPlaca = helper.validarPlacaLunesDomingos(vehiculo.getPlaca());</span>
+<span class="nc" id="L137">		Vehiculo vehiculoRecu = vehiculoService.getVehiculoByPlaca(vehiculo.getPlaca());</span>
+		try {
+<span class="nc bnc" id="L139" title="All 2 branches missed.">			if (vehiculoRecu == null) {</span>
+<span class="nc bnc" id="L140" title="All 6 branches missed.">				if (validacionTipoVehiculo &amp;&amp; validacionDisponibilidad &amp;&amp; validacionPlaca) {</span>
+<span class="nc" id="L141">					vehiculo.setIdVehiculo(java.util.UUID.randomUUID().toString().replaceAll(&quot;-&quot;, &quot;&quot;));</span>
+<span class="nc" id="L142">					vehiculo.setActivo(1);</span>
+<span class="nc" id="L143">					String formattedPlaca = vehiculo.getPlaca().toUpperCase();</span>
+<span class="nc" id="L144">					vehiculo.setPlaca(formattedPlaca);</span>
+<span class="nc" id="L145">					Registro registro = new Registro();</span>
+<span class="nc" id="L146">					registro.setVehiculo(vehiculo);</span>
+<span class="nc" id="L147">					registro.setEstado(ESTADO_ACTIVO);</span>
+<span class="nc" id="L148">					vehiculoService.saveVehiculo(vehiculo);</span>
+<span class="nc" id="L149">					SistemaRegistroHelper sistemaRegistroHelper = new SistemaRegistroHelper();</span>
+<span class="nc" id="L150">					sistemaRegistroHelper.crearRegistro(registro);</span>
+<span class="nc" id="L151">					mapResponse.put(RESPONSE, EXITOT);</span>
+<span class="nc" id="L152">				} else {</span>
+<span class="nc bnc" id="L153" title="All 2 branches missed.">					if (!validacionTipoVehiculo) {</span>
+<span class="nc" id="L154">						mapResponse.put(RESPONSE, &quot;Solo se aceptan tipo de vehiculo como carro o moto.&quot;);</span>
+<span class="nc bnc" id="L155" title="All 2 branches missed.">					} else if (!validacionDisponibilidad) {</span>
+<span class="nc" id="L156">						mapResponse.put(RESPONSE, &quot;No hay cupo disponible para: &quot; + vehiculo.getTipoVehiculo());</span>
+<span class="nc bnc" id="L157" title="All 2 branches missed.">					} else if (!validacionPlaca) {</span>
+<span class="nc" id="L158">						mapResponse.put(RESPONSE, &quot;No puede ingresar porque no esta en un dia habil&quot;);</span>
+					}
+				}
+			} else {
+<span class="nc" id="L162">				vehiculoRecu.setActivo(1);</span>
+<span class="nc" id="L163">				Registro registro = new Registro();</span>
+<span class="nc" id="L164">				registro.setVehiculo(vehiculoRecu);</span>
+<span class="nc" id="L165">				registro.setEstado(ESTADO_ACTIVO);</span>
+<span class="nc" id="L166">				vehiculoService.saveVehiculo(vehiculoRecu);</span>
+<span class="nc" id="L167">				SistemaRegistroHelper sistemaRegistroHelper = new SistemaRegistroHelper();</span>
+<span class="nc" id="L168">				sistemaRegistroHelper.crearRegistro(registro);</span>
+<span class="nc" id="L169">				mapResponse.put(RESPONSE, &quot;El vehiculo ya se encuentra registrado, se creo un nuevo registro&quot;);</span>
+<span class="nc" id="L170">				return mapResponse;</span>
+			}
+<span class="nc" id="L172">		} catch (Exception e) {</span>
+<span class="nc" id="L173">			log.error(ERRORT);</span>
+<span class="nc" id="L174">			mapResponse.put(RESPONSE, &quot;Ocurrio un error&quot;);</span>
+<span class="nc" id="L175">		}</span>
+<span class="nc" id="L176">		return mapResponse;</span>
+	}
+
+	/**
+	 * Metodo utilizado para guardar un registro desde un client.
+	 * 
+	 * @param registro
+	 * @return
+	 */
+	@CrossOrigin(origins = &quot;*&quot;)
+	public String crearRegistro(Registro registro) {
+
+<span class="nc" id="L188">		String urlService = &quot;http://localhost:8081/registro-service/guardar-registro&quot;;</span>
+<span class="nc" id="L189">		ClientConfig clientConfig = new DefaultClientConfig();</span>
+<span class="nc" id="L190">		clientConfig.getFeatures().put(JSONConfiguration.FEATURE_POJO_MAPPING, Boolean.TRUE);</span>
+<span class="nc" id="L191">		Client client = Client.create(clientConfig);</span>
+<span class="nc" id="L192">		WebResource webResource = client.resource(urlService);</span>
+<span class="nc" id="L193">		ClientResponse response = webResource.type(&quot;application/json&quot;).post(ClientResponse.class, registro);</span>
+<span class="nc" id="L194">		log.info(&quot;responseClienteService&quot;, response);</span>
+<span class="nc" id="L195">		return &quot;Ok&quot;;</span>
+
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.1.201405082137</span></div></body></html>

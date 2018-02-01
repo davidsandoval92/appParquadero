@@ -18,14 +18,14 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import com.ceiba.testdatabuilder.AppParametrosTestDataBuilder;
 import com.ceiba.testdatabuilder.VehiculoTestDataBuilder;
-import com.ceiba.helpers.ParqueaderoHelper;
+import com.ceiba.helpers.ReglasParqueaderoHelper;
 import com.ceiba.model.AppParametro;
 import com.ceiba.model.Vehiculo;
 import com.ceiba.service.AppParametrosServiceImpl;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest
-public class ParqueaderoHelperTest {
+public class ReglasParqueaderoHelperTest {
 	
 	@TestConfiguration
 	static class AppParametrosServiceImplTestContextConfiguration {
@@ -46,7 +46,7 @@ public class ParqueaderoHelperTest {
 	public void validarTipoVehiculoMoto() {
 
 		// Arrange
-		ParqueaderoHelper helperParqueadero = new ParqueaderoHelper();
+		ReglasParqueaderoHelper helperParqueadero = new ReglasParqueaderoHelper();
 		boolean flag = false;
 		Vehiculo vehiculo = new VehiculoTestDataBuilder().withTipoVehiculo("moto").build();
 		entityManager.persist(vehiculo);
@@ -64,7 +64,7 @@ public class ParqueaderoHelperTest {
 	public void validarTipoVehiculoCarro() {
 
 		// Arrange
-		ParqueaderoHelper helperParqueadero = new ParqueaderoHelper();
+		ReglasParqueaderoHelper helperParqueadero = new ReglasParqueaderoHelper();
 		boolean flag = false;
 		Vehiculo vehiculo = new VehiculoTestDataBuilder().withTipoVehiculo("carro").build();
 		entityManager.persist(vehiculo);
@@ -84,7 +84,7 @@ public class ParqueaderoHelperTest {
 		boolean flag = false;
 		final int cantidaCarros = 19;
 		final String tipoVehiculo = "carro";
-		ParqueaderoHelper pruHelper = new ParqueaderoHelper();
+		ReglasParqueaderoHelper pruHelper = new ReglasParqueaderoHelper();
 		// Act
 		flag = pruHelper.validarDisponibilidadTipoVehiculo(cantidaCarros, tipoVehiculo);
 		// Assert
@@ -97,7 +97,7 @@ public class ParqueaderoHelperTest {
 		boolean flag = false;
 		final int cantidaMotos = 9;
 		final String tipoVehiculo = "moto";
-		ParqueaderoHelper pruHelper = new ParqueaderoHelper();
+		ReglasParqueaderoHelper pruHelper = new ReglasParqueaderoHelper();
 		// Act
 		flag = pruHelper.validarDisponibilidadTipoVehiculo(cantidaMotos, tipoVehiculo);
 		// Assert
@@ -110,7 +110,7 @@ public class ParqueaderoHelperTest {
 		// Arrange
 		boolean flag = true;
 		Vehiculo vehiculo = new VehiculoTestDataBuilder().withPlaca("bRM17D").build();
-		ParqueaderoHelper pruHelper = new ParqueaderoHelper();
+		ReglasParqueaderoHelper pruHelper = new ReglasParqueaderoHelper();
 		// Act
 		flag = pruHelper.validarPlacaLunesDomingos(vehiculo.getPlaca());
 		// Assert
@@ -131,7 +131,7 @@ public class ParqueaderoHelperTest {
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd H:m:s");
 		Date fechaInicial=dateFormat.parse("2017-01-15 23:00:00");
         Date fechaFinal=dateFormat.parse("2017-01-16 01:10:10");
-		ParqueaderoHelper pruHelper = new ParqueaderoHelper();
+		ReglasParqueaderoHelper pruHelper = new ReglasParqueaderoHelper();
 		
 
 		// Act
@@ -153,7 +153,7 @@ public class ParqueaderoHelperTest {
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd H:m:s");
 		Date fechaInicial=dateFormat.parse("2017-01-15 07:00:00");
         Date fechaFinal=dateFormat.parse("2017-01-15 16:10:10");
-		ParqueaderoHelper pruHelper = new ParqueaderoHelper();
+		ReglasParqueaderoHelper pruHelper = new ReglasParqueaderoHelper();
 
 		// Act
 		valorPagar = pruHelper.procesarCobro(fechaInicial, fechaFinal, tipoVehiculoC, cilindraje, appParametrosService);
@@ -173,7 +173,7 @@ public class ParqueaderoHelperTest {
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd H:m:s");
 		Date fechaInicial=dateFormat.parse("2017-01-15 07:00:00");
         Date fechaFinal=dateFormat.parse("2017-01-15 11:10:10");
-		ParqueaderoHelper pruHelper = new ParqueaderoHelper();
+		ReglasParqueaderoHelper pruHelper = new ReglasParqueaderoHelper();
 
 		// Act
 		valorPagar = pruHelper.procesarCobro(fechaInicial, fechaFinal, tipoVehiculoM, cilindraje, appParametrosService);
@@ -193,7 +193,7 @@ public class ParqueaderoHelperTest {
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd H:m:s");
 		Date fechaInicial=dateFormat.parse("2017-01-15 07:00:00");
         Date fechaFinal=dateFormat.parse("2017-01-15 16:00:10");
-		ParqueaderoHelper pruHelper = new ParqueaderoHelper();
+		ReglasParqueaderoHelper pruHelper = new ReglasParqueaderoHelper();
 
 		// Act
 		valorPagar = pruHelper.procesarCobro(fechaInicial, fechaFinal, tipoVehiculoM, cilindraje, appParametrosService);

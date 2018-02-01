@@ -19,25 +19,20 @@ import org.springframework.web.context.WebApplicationContext;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import com.ceiba.model.Registro;
+import com.ceiba.helpers.SistemaConsultasHelper;
 import com.ceiba.model.Vehiculo;
 import com.ceiba.repository.VehiculoRepository;
 import com.ceiba.service.VehiculoService;
 import com.ceiba.service.VehiculoServiceImpl;
-import com.ceiba.testdatabuilder.RegistroTestDataBuilder;
 import com.ceiba.testdatabuilder.VehiculoTestDataBuilder;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -191,39 +186,17 @@ public class VehiculoControllerTest {
 		// Assert
 		Assert.assertEquals(200, mvcResult.getResponse().getStatus());
 	}
-	@Test
-	public void eliminarVehiculoTest() throws Exception {
-
-		MvcResult mvcResult = this.mockMvc.perform(delete("/vehiculo-service/eliminar-vehiculo/{id}", "1"))
-				.andDo(print()).andExpect(status().isOk()).andReturn();
-
-		Assert.assertEquals(200, mvcResult.getResponse().getStatus());
-	}
-
+	
 	@Test
 	public void catidadCarrosActivosTest() throws Exception {
 		// Arrange
-		VehiculoController vehiculoController = mock(VehiculoController.class);
-		when(vehiculoController.catidadCarrosActivos("carro")).thenReturn(true);
+		SistemaConsultasHelper SistemaConsultasHelper = mock(SistemaConsultasHelper.class);
+		when(SistemaConsultasHelper.catidadCarrosActivos("carro", vehiculoService)).thenReturn(true);
 		final String tipoVehiculo = "carro";
 		// Act
-		boolean flag = vehiController.catidadCarrosActivos(tipoVehiculo);
+		boolean flag = SistemaConsultasHelper.catidadCarrosActivos(tipoVehiculo, vehiculoService);
 		// Assert
 		Assert.assertTrue(flag);
-	}
-	
-	@Test
-	public void actualizarVehiculoTest() throws Exception {
-		// Arrange
-		final String url = "/vehiculo-service/actualizar-vehiculo";
-		Vehiculo vehiculo = new VehiculoTestDataBuilder().build();
-		// Act
-		MvcResult mvcResult = (MvcResult) this.mockMvc.perform(put(url)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(vehiculo)))
-				.andExpect(status().isOk()).andReturn();
-		// Assert
-		Assert.assertEquals(200, mvcResult.getResponse().getStatus());
 	}
 
 }

@@ -2,8 +2,6 @@ package com.ceiba.web;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -142,19 +140,6 @@ public class RegistroControllerTest {
 		Assert.assertEquals(200, mvcResult.getResponse().getStatus());
 	}
 	
-	
-	@Test
-	public void eliminarRegistroTest() throws Exception {
-		// Arrange
-		final String url = "/registro-service/eliminar-registro/{id}";
-		// Act
-		MvcResult mvcResult = this.mockMvcc.perform(delete(url, "1")).andDo(print()).andExpect(status().isOk())
-				.andReturn();
-		// Assert
-		Assert.assertEquals(200, mvcResult.getResponse().getStatus());
-	}
-	
-	
 	@Test
 	public void pagarTicketCarroTest() throws Exception {
 		// Arrange
@@ -196,20 +181,6 @@ public class RegistroControllerTest {
 		Registro registro = new RegistroTestDataBuilder().build();
 		// Act
 		MvcResult mvcResult = (MvcResult) this.mockMvcc.perform(post(url)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(registro)))
-				.andExpect(status().isOk()).andReturn();
-		// Assert
-		Assert.assertEquals(200, mvcResult.getResponse().getStatus());
-	}
-	
-	@Test
-	public void actualizarRegistroTest() throws Exception {
-		// Arrange
-		final String url = "/registro-service/actualizar-registro";
-		Registro registro = new RegistroTestDataBuilder().build();
-		// Act
-		MvcResult mvcResult = (MvcResult) this.mockMvcc.perform(put(url)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(registro)))
 				.andExpect(status().isOk()).andReturn();

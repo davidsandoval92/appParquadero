@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>SistemaConsultasHelper.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ServicesAppParking</a> &gt; <a href="index.source.html" class="el_package">com.ceiba.helpers</a> &gt; <span class="el_source">SistemaConsultasHelper.java</span></div><h1>SistemaConsultasHelper.java</h1><pre class="source lang-java linenums">package com.ceiba.helpers;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.ceiba.model.Registro;
+import com.ceiba.model.Vehiculo;
+import com.ceiba.service.RegistroService;
+import com.ceiba.service.VehiculoService;
+import com.ceiba.web.VehiculoController;
+
+<span class="nc" id="L17">public class SistemaConsultasHelper {</span>
+
+<span class="nc" id="L19">	private static final Logger log = LoggerFactory.getLogger(VehiculoController.class);</span>
+
+	/**
+	 * Metodo para consultar la cantidad de carros activos segun el tipo de
+	 * vehiculo.
+	 * 
+	 * @param tipoVehiculo
+	 * @param vehiculoService
+	 * @return
+	 */
+	public boolean catidadCarrosActivos(String tipoVehiculo, VehiculoService vehiculoService) {
+
+<span class="nc" id="L31">		int cantidad = 0;</span>
+<span class="nc" id="L32">		final int estado = 1;</span>
+<span class="nc" id="L33">		boolean flag = false;</span>
+
+		try {
+<span class="nc" id="L36">			List&lt;Vehiculo&gt; vehiculos = (List&lt;Vehiculo&gt;) vehiculoService.cantidadVehiculosActivos(tipoVehiculo, estado);</span>
+<span class="nc" id="L37">			cantidad = vehiculos.size();</span>
+<span class="nc" id="L38">			ReglasParqueaderoHelper pruHelper = new ReglasParqueaderoHelper();</span>
+<span class="nc" id="L39">			flag = pruHelper.validarDisponibilidadTipoVehiculo(cantidad, tipoVehiculo);</span>
+
+<span class="nc" id="L41">		} catch (Exception e) {</span>
+<span class="nc" id="L42">			log.info(&quot;Error en el metodo catidadCarrosActivos&quot;);</span>
+<span class="nc" id="L43">		}</span>
+
+<span class="nc" id="L45">		return flag;</span>
+	}
+
+	/**
+	 * Metodo para recuperar todos los vehiculos registrados.
+	 * 
+	 * @param vehiculoService
+	 * @return
+	 */
+	public Iterable&lt;Vehiculo&gt; recuperarVehiculoHelper(VehiculoService vehiculoService) {
+		Iterable&lt;Vehiculo&gt; vehiculo;
+<span class="nc" id="L56">		vehiculo = vehiculoService.listAllVehiculos();</span>
+<span class="nc" id="L57">		return vehiculo;</span>
+	}
+
+	/**
+	 * Metodo para recuperar un vehiculo por la placa.
+	 * 
+	 * @param placa
+	 * @param vehiculoService
+	 * @return
+	 */
+	public Vehiculo recuperarVehiculoByPlacaHelper(String placa, VehiculoService vehiculoService) {
+		Vehiculo vehiculo;
+<span class="nc" id="L69">		vehiculo = vehiculoService.getVehiculoByPlaca(placa);</span>
+<span class="nc" id="L70">		return vehiculo;</span>
+	}
+
+	/**
+	 * Metodo para recuperar un vehiculo por el id del vehiculo.
+	 * 
+	 * @param idVehiculo
+	 * @param vehiculoService
+	 * @return
+	 */
+	public Vehiculo recuperarVehiculoHelper(String idVehiculo, VehiculoService vehiculoService) {
+		Vehiculo vehiculo;
+<span class="nc" id="L82">		vehiculo = vehiculoService.getVehiculoById(idVehiculo);</span>
+<span class="nc" id="L83">		return vehiculo;</span>
+	}
+
+	/////////////////////////////////////////////////////////
+
+	/**
+	 * Metodo para recuperar un registro.
+	 * 
+	 * @param vehiculoService
+	 * @param registroService
+	 * @param placa
+	 * @return
+	 */
+	public List&lt;HashMap&lt;String, String&gt;&gt; recuperarRegistroHelper(VehiculoService vehiculoService,
+			RegistroService registroService, String placa) {
+
+<span class="nc" id="L99">		List&lt;HashMap&lt;String, String&gt;&gt; mapResponses = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L100">		Vehiculo vehiculo = vehiculoService.getVehiculoByPlaca(placa.toUpperCase());</span>
+<span class="nc" id="L101">		List&lt;Registro&gt; registros = registroService.getRegistrosByIdVehiculo(vehiculo.getIdVehiculo());</span>
+
+<span class="nc bnc" id="L103" title="All 2 branches missed.">		for (Registro registro : registros) {</span>
+<span class="nc" id="L104">			HashMap&lt;String, String&gt; mapResponse = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L105">			mapResponse.put(&quot;placa&quot;, vehiculo.getPlaca());</span>
+<span class="nc" id="L106">			mapResponse.put(&quot;tipoVehiculo&quot;, vehiculo.getTipoVehiculo());</span>
+<span class="nc" id="L107">			mapResponse.put(&quot;fechaingreso&quot;, registro.getFechaingreso().toString());</span>
+<span class="nc" id="L108">			mapResponse.put(&quot;estado&quot;, registro.getEstado());</span>
+<span class="nc" id="L109">			mapResponse.put(&quot;id&quot;, registro.getIdRegistro());</span>
+<span class="nc" id="L110">			mapResponses.add(mapResponse);</span>
+<span class="nc" id="L111">		}</span>
+<span class="nc" id="L112">		return mapResponses;</span>
+	}
+
+	/**
+	 * Metodo para recuperar un registro por el Id.
+	 * 
+	 * @param id
+	 * @param registroService
+	 * @return
+	 */
+	public Map&lt;Object, Object&gt; recuperarRegistroByIdHelper(String id, RegistroService registroService) {
+		Registro registro;
+<span class="nc" id="L124">		registro = registroService.getRegistroById(id);</span>
+<span class="nc" id="L125">		HashMap&lt;Object, Object&gt; registroRecu = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L126">		registroRecu.put(&quot;idRegistro&quot;, registro.getIdRegistro());</span>
+<span class="nc" id="L127">		registroRecu.put(&quot;estado&quot;, registro.getEstado());</span>
+<span class="nc" id="L128">		registroRecu.put(&quot;fechaingreso&quot;,</span>
+<span class="nc bnc" id="L129" title="All 2 branches missed.">				(registro.getFechaingreso() != null) ? registro.getFechaingreso().toString() : null);</span>
+<span class="nc" id="L130">		registroRecu.put(&quot;fechasalida&quot;,</span>
+<span class="nc bnc" id="L131" title="All 2 branches missed.">				(registro.getFechasalida() != null) ? registro.getFechasalida().toString() : null);</span>
+<span class="nc" id="L132">		registroRecu.put(&quot;valorpagar&quot;, registro.getValorpagar());</span>
+<span class="nc" id="L133">		registroRecu.put(&quot;idVehiculo&quot;, registro.getIdVehiculo());</span>
+<span class="nc" id="L134">		return registroRecu;</span>
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.1.201405082137</span></div></body></html>

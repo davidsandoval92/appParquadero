@@ -7,174 +7,75 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-
-
-import com.sun.jersey.api.client.*;
-import com.sun.jersey.api.client.config.*;
-import com.sun.jersey.api.json.JSONConfiguration;
-
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.ceiba.helpers.ParqueaderoHelper;
-import com.ceiba.model.Registro;
+import com.ceiba.helpers.SistemaConsultasHelper;
+import com.ceiba.helpers.SistemaRegistroHelper;
 import com.ceiba.model.Vehiculo;
 import com.ceiba.service.VehiculoService;
 
 @RestController
 @RequestMapping(&quot;/vehiculo-service&quot;)
-<span class="nc" id="L30">public class VehiculoController {</span>
-
-<span class="nc" id="L32">	private static final Logger log = LoggerFactory.getLogger(VehiculoController.class);</span>
-	private static final String ERRORT = &quot;Fallo al guardar el registro del vehiculo&quot;;
-	private static final String EXITOT = &quot;Vehiculo guardado correctamente&quot;;
-	private static final String RESPONSE = &quot;Response&quot;;
+<span class="nc" id="L18">public class VehiculoController {</span>
 
 	@Autowired
 	private VehiculoService vehiculoService;
-	
+
+	/**
+	 * Servicio que recupera la informacion de todos los vehiculos almacenados.
+	 * 
+	 * @return
+	 */
 	@CrossOrigin(origins = &quot;*&quot;)
 	@RequestMapping(method = RequestMethod.GET, value = &quot;/vehiculos&quot;)
 	public Iterable&lt;Vehiculo&gt; recuperarVehiculos() {
 
-		Iterable&lt;Vehiculo&gt; vehiculo;
-<span class="nc" id="L45">		vehiculo = vehiculoService.listAllVehiculos();</span>
-<span class="nc" id="L46">		return vehiculo;</span>
+<span class="nc" id="L32">		SistemaConsultasHelper consultaH = new SistemaConsultasHelper();</span>
+<span class="nc" id="L33">		return consultaH.recuperarVehiculoHelper(vehiculoService);</span>
+
 	}
 
+	/**
+	 * Servicio que recupera la informacion de un vehiculo por el Id del
+	 * vehiculo.
+	 * 
+	 * @param idVehiculo
+	 * @return
+	 */
 	@CrossOrigin(origins = &quot;*&quot;, allowCredentials = &quot;true&quot;)
 	@RequestMapping(method = RequestMethod.GET, value = &quot;/vehiculo/{idVehiculo}&quot;)
 	public Vehiculo recuperarVehiculo(@PathVariable String idVehiculo) {
 
-		Vehiculo vehiculo;
-<span class="nc" id="L54">		vehiculo = vehiculoService.getVehiculoById(idVehiculo);</span>
-<span class="nc" id="L55">		return vehiculo;</span>
+<span class="nc" id="L48">		SistemaConsultasHelper consultaH = new SistemaConsultasHelper();</span>
+<span class="nc" id="L49">		return consultaH.recuperarVehiculoHelper(idVehiculo, vehiculoService);</span>
 	}
 
+	/**
+	 * Servicio que recupera la informacion de un vehiculo seguna la placa del
+	 * mismo.
+	 * 
+	 * @param placa
+	 * @return
+	 */
 	@CrossOrigin(origins = &quot;*&quot;)
 	@RequestMapping(method = RequestMethod.GET, value = &quot;/vehiculobyplaca/{placa}&quot;)
 	public Vehiculo recuperarVehiculoByPlaca(@PathVariable String placa) {
 
-		Vehiculo vehiculo;
-<span class="nc" id="L63">		vehiculo = vehiculoService.getVehiculoByPlaca(placa);</span>
-<span class="nc" id="L64">		return vehiculo;</span>
+<span class="nc" id="L63">		SistemaConsultasHelper consultaH = new SistemaConsultasHelper();</span>
+<span class="nc" id="L64">		return consultaH.recuperarVehiculoByPlacaHelper(placa, vehiculoService);</span>
 	}
-	
+
+	/**
+	 * Servicio que persiste la informacion de un vehiculo.
+	 * 
+	 * @param vehiculo
+	 * @return
+	 */
 	@CrossOrigin(origins = &quot;*&quot;)
 	@RequestMapping(method = RequestMethod.POST, value = &quot;/guardar-vehiculo&quot;, produces = { &quot;application/json&quot; })
 	public Map&lt;String, String&gt; guardarVehiculo(@RequestBody Vehiculo vehiculo) {
 
-<span class="nc" id="L71">		HashMap&lt;String, String&gt; mapResponse = new HashMap&lt;&gt;();</span>
-<span class="nc" id="L72">		ParqueaderoHelper helper = new ParqueaderoHelper();</span>
-<span class="nc" id="L73">		boolean validacionTipoVehiculo = helper.validarTipoVehiculo(vehiculo);</span>
-<span class="nc" id="L74">		boolean validacionDisponibilidad = catidadCarrosActivos(vehiculo.getTipoVehiculo());</span>
-<span class="nc" id="L75">		boolean validacionPlaca = helper.validarPlacaLunesDomingos(vehiculo.getPlaca());</span>
-<span class="nc" id="L76">		Vehiculo vehiculoRecu =  vehiculoService.getVehiculoByPlaca(vehiculo.getPlaca());</span>
-		try {
-<span class="nc bnc" id="L78" title="All 2 branches missed.">			if (vehiculoRecu == null) {</span>
-<span class="nc bnc" id="L79" title="All 6 branches missed.">				if (validacionTipoVehiculo &amp;&amp; validacionDisponibilidad &amp;&amp; validacionPlaca) {</span>
-<span class="nc" id="L80">					vehiculo.setIdVehiculo(java.util.UUID.randomUUID().toString().replaceAll(&quot;-&quot;, &quot;&quot;));</span>
-<span class="nc" id="L81">					vehiculo.setActivo(1);</span>
-<span class="nc" id="L82">					String formattedPlaca = vehiculo.getPlaca().toUpperCase();</span>
-<span class="nc" id="L83">					vehiculo.setPlaca(formattedPlaca);</span>
-<span class="nc" id="L84">					Registro registro = new Registro();</span>
-<span class="nc" id="L85">					registro.setVehiculo(vehiculo);</span>
-<span class="nc" id="L86">					registro.setEstado(&quot;activo&quot;);</span>
-<span class="nc" id="L87">					vehiculoService.saveVehiculo(vehiculo);</span>
-<span class="nc" id="L88">					crearRegistro(registro);</span>
-<span class="nc" id="L89">					mapResponse.put(RESPONSE, EXITOT);</span>
-<span class="nc" id="L90">				} else {</span>
-<span class="nc bnc" id="L91" title="All 2 branches missed.">					if (!validacionTipoVehiculo) {</span>
-<span class="nc" id="L92">						mapResponse.put(RESPONSE, &quot;Solo se aceptan tipo de vehiculo como carro o moto.&quot;);</span>
-<span class="nc bnc" id="L93" title="All 2 branches missed.">					} else if (!validacionDisponibilidad) {</span>
-<span class="nc" id="L94">						mapResponse.put(RESPONSE, &quot;No hay cupo disponible para: &quot; + vehiculo.getTipoVehiculo());</span>
-<span class="nc bnc" id="L95" title="All 2 branches missed.">					} else if (!validacionPlaca) {</span>
-<span class="nc" id="L96">						mapResponse.put(RESPONSE, &quot;No puede ingresar porque no esta en un dia habil&quot;);</span>
-					}
-				}
-			} else {
-<span class="nc" id="L100">				vehiculoRecu.setActivo(1);</span>
-<span class="nc" id="L101">				Registro registro = new Registro();</span>
-<span class="nc" id="L102">				registro.setVehiculo(vehiculoRecu);</span>
-<span class="nc" id="L103">				registro.setEstado(&quot;activo&quot;);</span>
-<span class="nc" id="L104">				vehiculoService.saveVehiculo(vehiculoRecu);</span>
-<span class="nc" id="L105">				crearRegistro(registro);</span>
-<span class="nc" id="L106">				mapResponse.put(RESPONSE, &quot;El vehiculo ya se encuentra registrado, se creo un nuevo registro&quot;);</span>
-<span class="nc" id="L107">				return mapResponse;</span>
-			}
-<span class="nc" id="L109">		} catch (Exception e) {</span>
-<span class="nc" id="L110">			log.error(ERRORT);</span>
-<span class="nc" id="L111">			mapResponse.put(RESPONSE, &quot;Ocurrio un error&quot;);</span>
-<span class="nc" id="L112">		}</span>
-<span class="nc" id="L113">		return mapResponse;</span>
-	}
-
-	@CrossOrigin(origins = &quot;*&quot;)
-	@RequestMapping(method = RequestMethod.PUT, value = &quot;/actualizar-vehiculo&quot;)
-	public Map&lt;String, String&gt; actualizarVehiculo(@RequestBody Vehiculo vehiculo) {
-
-<span class="nc" id="L120">		HashMap&lt;String, String&gt; mapResponse = new HashMap&lt;&gt;();</span>
-		try {
-<span class="nc" id="L122">			vehiculoService.saveVehiculo(vehiculo);</span>
-<span class="nc" id="L123">			mapResponse.put(RESPONSE, &quot;Vehiculo actualizado correctamente&quot;);</span>
-<span class="nc" id="L124">		} catch (Exception e) {</span>
-<span class="nc" id="L125">			log.error(ERRORT);</span>
-<span class="nc" id="L126">			mapResponse.put(RESPONSE, &quot;No se actualizo el vehiculo&quot;);</span>
-<span class="nc" id="L127">		}</span>
-<span class="nc" id="L128">		log.info(EXITOT);</span>
-<span class="nc" id="L129">		return mapResponse;</span>
-	}
-
-	@CrossOrigin(origins = &quot;*&quot;)
-	@RequestMapping(method = RequestMethod.DELETE, value = &quot;/eliminar-vehiculo/{id}&quot;)
-	public Map&lt;String, String&gt; eliminarVehiculo(@PathVariable String id) {
-
-<span class="nc" id="L136">		HashMap&lt;String, String&gt; mapResponse = new HashMap&lt;&gt;();</span>
-
-		try {
-<span class="nc" id="L139">			vehiculoService.deleteVehiculo(id);</span>
-<span class="nc" id="L140">			mapResponse.put(RESPONSE, &quot;Vehiculo eliminado&quot;);</span>
-<span class="nc" id="L141">		} catch (Exception e) {</span>
-<span class="nc" id="L142">			log.error(e.getMessage());</span>
-<span class="nc" id="L143">			mapResponse.put(RESPONSE, &quot;No se elimino el vehiculo, revisar error&quot;);</span>
-<span class="nc" id="L144">		}</span>
-<span class="nc" id="L145">		return mapResponse;</span>
-	}
-
-	public boolean catidadCarrosActivos(String tipoVehiculo) {
-
-<span class="nc" id="L150">		int cantidad = 0;</span>
-<span class="nc" id="L151">		final int estado = 1;</span>
-<span class="nc" id="L152">		boolean flag = false;</span>
-
-		try {
-<span class="nc" id="L155">			List&lt;Vehiculo&gt; vehiculos = (List&lt;Vehiculo&gt;) vehiculoService.cantidadVehiculosActivos(tipoVehiculo, estado);</span>
-<span class="nc" id="L156">			cantidad = vehiculos.size();</span>
-<span class="nc" id="L157">			ParqueaderoHelper pruHelper = new ParqueaderoHelper();</span>
-<span class="nc" id="L158">			flag = pruHelper.validarDisponibilidadTipoVehiculo(cantidad, tipoVehiculo);</span>
-
-<span class="nc" id="L160">		} catch (Exception e) {</span>
-<span class="nc" id="L161">			log.info(&quot;Error en el metodo catidadCarrosActivos&quot;);</span>
-<span class="nc" id="L162">		}</span>
-
-<span class="nc" id="L164">		return flag;</span>
-	}
-
-	@CrossOrigin(origins = &quot;*&quot;)
-	public String crearRegistro(Registro registro) {
-
-<span class="nc" id="L170">		String urlService = &quot;http://localhost:8080/registro-service/guardar-registro&quot;;</span>
-<span class="nc" id="L171">		ClientConfig clientConfig = new DefaultClientConfig();</span>
-<span class="nc" id="L172">		clientConfig.getFeatures().put(JSONConfiguration.FEATURE_POJO_MAPPING, Boolean.TRUE);</span>
-<span class="nc" id="L173">		Client client = Client.create(clientConfig);</span>
-<span class="nc" id="L174">		WebResource webResource = client.resource(urlService);</span>
-<span class="nc" id="L175">		ClientResponse response = webResource.type(&quot;application/json&quot;).post(ClientResponse.class, registro);</span>
-<span class="nc" id="L176">		log.info(&quot;responseClienteService&quot;, response);</span>
-<span class="nc" id="L177">		return &quot;Ok&quot;;</span>
+<span class="nc" id="L77">		SistemaRegistroHelper registrohelper = new SistemaRegistroHelper();</span>
+<span class="nc" id="L78">		return registrohelper.guardarVehiculoHelper(vehiculo, vehiculoService);</span>
 
 	}
 
