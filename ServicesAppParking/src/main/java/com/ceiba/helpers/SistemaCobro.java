@@ -12,13 +12,12 @@ import com.ceiba.model.Vehiculo;
 import com.ceiba.service.AppParametrosService;
 import com.ceiba.service.RegistroService;
 import com.ceiba.service.VehiculoService;
-import com.ceiba.web.VehiculoController;
 
 public class SistemaCobro {
 
 	private static final String ESTADO_ACTIVO = "activo";
 	private static final String RESPONSE = "Response";
-	private static final Logger log = LoggerFactory.getLogger(VehiculoController.class);
+	private static final Logger log = LoggerFactory.getLogger(SistemaCobro.class);
 	
 	/**
 	 * Metodo para validar el pago de un registro(ticket).

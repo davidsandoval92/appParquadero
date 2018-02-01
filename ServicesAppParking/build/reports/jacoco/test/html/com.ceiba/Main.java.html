@@ -8,29 +8,21 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.ApplicationContext;
 
-import org.slf4j.LoggerFactory;
-import org.slf4j.Logger;
 
 
 @SpringBootApplication
-<span class="nc" id="L16">public class Main</span>
+<span class="nc" id="L14">public class Main</span>
 {
-
-<span class="nc" id="L19">	private static final Logger log = LoggerFactory.getLogger( Main.class );</span>
 
 
 	public static void main( String[] args )
 	{
-<span class="nc" id="L24">		ApplicationContext context = SpringApplication.run( Main.class, args );</span>
+<span class="nc" id="L20">		ApplicationContext context = SpringApplication.run( Main.class, args );</span>
 
-<span class="nc" id="L26">		String[] beansNames = context.getBeanDefinitionNames();</span>
-<span class="nc" id="L27">		Arrays.sort( beansNames );</span>
+<span class="nc" id="L22">		String[] beansNames = context.getBeanDefinitionNames();</span>
+<span class="nc" id="L23">		Arrays.sort( beansNames );</span>
 
-<span class="nc bnc" id="L29" title="All 2 branches missed.">		for( String beanName : beansNames ) {</span>
-<span class="nc" id="L30">			log.info( beanName );</span>
-		}
-
-<span class="nc" id="L33">	}</span>
+<span class="nc" id="L25">	}</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.1.201405082137</span></div></body></html>

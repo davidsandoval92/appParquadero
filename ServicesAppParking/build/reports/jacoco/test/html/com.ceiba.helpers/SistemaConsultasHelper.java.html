@@ -83,8 +83,6 @@ import com.ceiba.web.VehiculoController;
 <span class="nc" id="L83">		return vehiculo;</span>
 	}
 
-	/////////////////////////////////////////////////////////
-
 	/**
 	 * Metodo para recuperar un registro.
 	 * 
@@ -96,20 +94,20 @@ import com.ceiba.web.VehiculoController;
 	public List&lt;HashMap&lt;String, String&gt;&gt; recuperarRegistroHelper(VehiculoService vehiculoService,
 			RegistroService registroService, String placa) {
 
-<span class="nc" id="L99">		List&lt;HashMap&lt;String, String&gt;&gt; mapResponses = new ArrayList&lt;&gt;();</span>
-<span class="nc" id="L100">		Vehiculo vehiculo = vehiculoService.getVehiculoByPlaca(placa.toUpperCase());</span>
-<span class="nc" id="L101">		List&lt;Registro&gt; registros = registroService.getRegistrosByIdVehiculo(vehiculo.getIdVehiculo());</span>
+<span class="nc" id="L97">		List&lt;HashMap&lt;String, String&gt;&gt; mapResponses = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L98">		Vehiculo vehiculo = vehiculoService.getVehiculoByPlaca(placa.toUpperCase());</span>
+<span class="nc" id="L99">		List&lt;Registro&gt; registros = registroService.getRegistrosByIdVehiculo(vehiculo.getIdVehiculo());</span>
 
-<span class="nc bnc" id="L103" title="All 2 branches missed.">		for (Registro registro : registros) {</span>
-<span class="nc" id="L104">			HashMap&lt;String, String&gt; mapResponse = new HashMap&lt;&gt;();</span>
-<span class="nc" id="L105">			mapResponse.put(&quot;placa&quot;, vehiculo.getPlaca());</span>
-<span class="nc" id="L106">			mapResponse.put(&quot;tipoVehiculo&quot;, vehiculo.getTipoVehiculo());</span>
-<span class="nc" id="L107">			mapResponse.put(&quot;fechaingreso&quot;, registro.getFechaingreso().toString());</span>
-<span class="nc" id="L108">			mapResponse.put(&quot;estado&quot;, registro.getEstado());</span>
-<span class="nc" id="L109">			mapResponse.put(&quot;id&quot;, registro.getIdRegistro());</span>
-<span class="nc" id="L110">			mapResponses.add(mapResponse);</span>
-<span class="nc" id="L111">		}</span>
-<span class="nc" id="L112">		return mapResponses;</span>
+<span class="nc bnc" id="L101" title="All 2 branches missed.">		for (Registro registro : registros) {</span>
+<span class="nc" id="L102">			HashMap&lt;String, String&gt; mapResponse = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L103">			mapResponse.put(&quot;placa&quot;, vehiculo.getPlaca());</span>
+<span class="nc" id="L104">			mapResponse.put(&quot;tipoVehiculo&quot;, vehiculo.getTipoVehiculo());</span>
+<span class="nc" id="L105">			mapResponse.put(&quot;fechaingreso&quot;, registro.getFechaingreso().toString());</span>
+<span class="nc" id="L106">			mapResponse.put(&quot;estado&quot;, registro.getEstado());</span>
+<span class="nc" id="L107">			mapResponse.put(&quot;id&quot;, registro.getIdRegistro());</span>
+<span class="nc" id="L108">			mapResponses.add(mapResponse);</span>
+<span class="nc" id="L109">		}</span>
+<span class="nc" id="L110">		return mapResponses;</span>
 	}
 
 	/**
@@ -121,17 +119,17 @@ import com.ceiba.web.VehiculoController;
 	 */
 	public Map&lt;Object, Object&gt; recuperarRegistroByIdHelper(String id, RegistroService registroService) {
 		Registro registro;
-<span class="nc" id="L124">		registro = registroService.getRegistroById(id);</span>
-<span class="nc" id="L125">		HashMap&lt;Object, Object&gt; registroRecu = new HashMap&lt;&gt;();</span>
-<span class="nc" id="L126">		registroRecu.put(&quot;idRegistro&quot;, registro.getIdRegistro());</span>
-<span class="nc" id="L127">		registroRecu.put(&quot;estado&quot;, registro.getEstado());</span>
-<span class="nc" id="L128">		registroRecu.put(&quot;fechaingreso&quot;,</span>
-<span class="nc bnc" id="L129" title="All 2 branches missed.">				(registro.getFechaingreso() != null) ? registro.getFechaingreso().toString() : null);</span>
-<span class="nc" id="L130">		registroRecu.put(&quot;fechasalida&quot;,</span>
-<span class="nc bnc" id="L131" title="All 2 branches missed.">				(registro.getFechasalida() != null) ? registro.getFechasalida().toString() : null);</span>
-<span class="nc" id="L132">		registroRecu.put(&quot;valorpagar&quot;, registro.getValorpagar());</span>
-<span class="nc" id="L133">		registroRecu.put(&quot;idVehiculo&quot;, registro.getIdVehiculo());</span>
-<span class="nc" id="L134">		return registroRecu;</span>
+<span class="nc" id="L122">		registro = registroService.getRegistroById(id);</span>
+<span class="nc" id="L123">		HashMap&lt;Object, Object&gt; registroRecu = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L124">		registroRecu.put(&quot;idRegistro&quot;, registro.getIdRegistro());</span>
+<span class="nc" id="L125">		registroRecu.put(&quot;estado&quot;, registro.getEstado());</span>
+<span class="nc" id="L126">		registroRecu.put(&quot;fechaingreso&quot;,</span>
+<span class="nc bnc" id="L127" title="All 2 branches missed.">				(registro.getFechaingreso() != null) ? registro.getFechaingreso().toString() : null);</span>
+<span class="nc" id="L128">		registroRecu.put(&quot;fechasalida&quot;,</span>
+<span class="nc bnc" id="L129" title="All 2 branches missed.">				(registro.getFechasalida() != null) ? registro.getFechasalida().toString() : null);</span>
+<span class="nc" id="L130">		registroRecu.put(&quot;valorpagar&quot;, registro.getValorpagar());</span>
+<span class="nc" id="L131">		registroRecu.put(&quot;idVehiculo&quot;, registro.getIdVehiculo());</span>
+<span class="nc" id="L132">		return registroRecu;</span>
 	}
 
 }

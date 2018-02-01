@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ceiba.helpers.SistemaCobro;
 import com.ceiba.helpers.SistemaConsultasHelper;
 import com.ceiba.helpers.SistemaRegistroHelper;
 import com.ceiba.model.Registro;
@@ -20,7 +21,7 @@ import com.ceiba.service.VehiculoService;
 
 @RestController
 @RequestMapping(&quot;/registro-service&quot;)
-<span class="nc" id="L23">public class RegistroController {</span>
+<span class="nc" id="L24">public class RegistroController {</span>
 
 	@Autowired
 	private RegistroService registroService;
@@ -41,8 +42,8 @@ import com.ceiba.service.VehiculoService;
 	public Iterable&lt;Registro&gt; recuperarRegistros() {
 
 		Iterable&lt;Registro&gt; registro;
-<span class="nc" id="L44">		registro = registroService.listAllRegistro();</span>
-<span class="nc" id="L45">		return registro;</span>
+<span class="nc" id="L45">		registro = registroService.listAllRegistro();</span>
+<span class="nc" id="L46">		return registro;</span>
 	}
 
 	/**
@@ -55,8 +56,8 @@ import com.ceiba.service.VehiculoService;
 	@RequestMapping(method = RequestMethod.GET, value = &quot;/registrobyid/{id}&quot;)
 	public Map&lt;Object, Object&gt; recuperarRegistroById(@PathVariable String id) {
 
-<span class="nc" id="L58">		SistemaConsultasHelper sistemaConsultaHelper = new SistemaConsultasHelper();</span>
-<span class="nc" id="L59">		return sistemaConsultaHelper.recuperarRegistroByIdHelper(id, registroService);</span>
+<span class="nc" id="L59">		SistemaConsultasHelper sistemaConsultaHelper = new SistemaConsultasHelper();</span>
+<span class="nc" id="L60">		return sistemaConsultaHelper.recuperarRegistroByIdHelper(id, registroService);</span>
 
 	}
 
@@ -71,8 +72,8 @@ import com.ceiba.service.VehiculoService;
 	public List&lt;Registro&gt; recuperarRegistrosByIdVehiculo(@PathVariable String idVehiculo) {
 
 		List&lt;Registro&gt; registro;
-<span class="nc" id="L74">		registro = registroService.getRegistrosByIdVehiculo(idVehiculo);</span>
-<span class="nc" id="L75">		return registro;</span>
+<span class="nc" id="L75">		registro = registroService.getRegistrosByIdVehiculo(idVehiculo);</span>
+<span class="nc" id="L76">		return registro;</span>
 	}
 
 	/**
@@ -85,8 +86,8 @@ import com.ceiba.service.VehiculoService;
 	@RequestMapping(method = RequestMethod.POST, value = &quot;/guardar-registro&quot;)
 	public Map&lt;String, String&gt; guardarRegistro(@RequestBody Registro registro) {
 
-<span class="nc" id="L88">		SistemaRegistroHelper registrohelper = new SistemaRegistroHelper();</span>
-<span class="nc" id="L89">		return registrohelper.guardarRegistroHelper(registro, registroService);</span>
+<span class="nc" id="L89">		SistemaRegistroHelper registrohelper = new SistemaRegistroHelper();</span>
+<span class="nc" id="L90">		return registrohelper.guardarRegistroHelper(registro, registroService);</span>
 
 	}
 
@@ -101,8 +102,8 @@ import com.ceiba.service.VehiculoService;
 	@RequestMapping(method = RequestMethod.GET, value = &quot;/pagar-ticket/{placa}/{idRegistro}&quot;)
 	public Map&lt;Object, Object&gt; pagarTicketCarro(@PathVariable String placa, @PathVariable String idRegistro) {
 
-<span class="nc" id="L104">		SistemaRegistroHelper registrohelper = new SistemaRegistroHelper();</span>
-<span class="nc" id="L105">		return registrohelper.validacionesPagarTicket(vehiculoService, registroService, appParametrosService, placa,</span>
+<span class="nc" id="L105">		SistemaCobro sistemaCobro = new SistemaCobro();</span>
+<span class="nc" id="L106">		return sistemaCobro.validacionesPagarTicket(vehiculoService, registroService, appParametrosService, placa,</span>
 				idRegistro);
 	}
 
@@ -116,8 +117,8 @@ import com.ceiba.service.VehiculoService;
 	@RequestMapping(method = RequestMethod.GET, value = &quot;/vehiculos-consulta/{placa}&quot;)
 	public List&lt;HashMap&lt;String, String&gt;&gt; recuperarRegistrosVehiculoConsulta(@PathVariable String placa) {
 
-<span class="nc" id="L119">		SistemaConsultasHelper sistemaConsultaHelper = new SistemaConsultasHelper();</span>
-<span class="nc" id="L120">		return sistemaConsultaHelper.recuperarRegistroHelper(vehiculoService, registroService, placa);</span>
+<span class="nc" id="L120">		SistemaConsultasHelper sistemaConsultaHelper = new SistemaConsultasHelper();</span>
+<span class="nc" id="L121">		return sistemaConsultaHelper.recuperarRegistroHelper(vehiculoService, registroService, placa);</span>
 	}
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.1.201405082137</span></div></body></html>

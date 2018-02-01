@@ -83,8 +83,6 @@ public class SistemaConsultasHelper {
 		return vehiculo;
 	}
 
-	/////////////////////////////////////////////////////////
-
 	/**
 	 * Metodo para recuperar un registro.
 	 * 

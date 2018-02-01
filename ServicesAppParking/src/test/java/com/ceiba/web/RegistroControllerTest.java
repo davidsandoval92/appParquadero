@@ -25,6 +25,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import com.ceiba.model.AppParametro;
 import com.ceiba.model.Registro;
 import com.ceiba.model.Vehiculo;
 import com.ceiba.repository.AppParametrosRepository;
@@ -36,6 +37,7 @@ import com.ceiba.service.RegistroService;
 import com.ceiba.service.RegistroServiceImpl;
 import com.ceiba.service.VehiculoService;
 import com.ceiba.service.VehiculoServiceImpl;
+import com.ceiba.testdatabuilder.AppParametrosTestDataBuilder;
 import com.ceiba.testdatabuilder.RegistroTestDataBuilder;
 import com.ceiba.testdatabuilder.VehiculoTestDataBuilder;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -82,6 +84,9 @@ public class RegistroControllerTest {
 
 	@Autowired
 	private VehiculoService vehiculoService;
+	
+	@Autowired
+	private AppParametrosService appParametrosService;
 	
 	@Autowired
 	ObjectMapper objectMapper;
@@ -161,14 +166,51 @@ public class RegistroControllerTest {
 	public void pagarTicketMotoTest() throws Exception {
 		// Arrange
 		final String url = "/registro-service/pagar-ticket/{placa}/{idRegistro}";
-		Vehiculo vehiculo = new VehiculoTestDataBuilder().withPlaca("NCY505").withTipoVehiculo("moto").build();
+		Vehiculo vehiculo = new VehiculoTestDataBuilder().withPlaca("NCY505").withTipoVehiculo("moto").withCilindraje(600).build();
+		Mockito.when(vehiculoRepository.findByplaca("NCY505")).thenReturn(vehiculo);
+		Registro registro = new RegistroTestDataBuilder().withIdRegistro("123").build();
+		Mockito.when(registroService.getRegistroByidVehiculoAndEstado(vehiculo.getIdVehiculo(), "activo")).thenReturn(registro);
+		Mockito.when(registroService.getRegistroByidVehiculoAndEstadoAndIdRegistro(vehiculo.getIdVehiculo(), "activo",registro.getIdRegistro())).thenReturn(registro);
+		AppParametro appParametro = new AppParametrosTestDataBuilder().withIdParametros("1").withParametro("CilindrajeMaxMoto").withValor("500").build();
+		AppParametro appParametroC = new AppParametrosTestDataBuilder().withIdParametros("1").withParametro("ValorCilindrajeMax").withValor("2000").build();
+		Mockito.when(appParametrosService.getParametroByParametro("CilindrajeMaxMoto")).thenReturn(appParametro);
+		Mockito.when(appParametrosService.getParametroByParametro("ValorCilindrajeMax")).thenReturn(appParametroC);		
+		// Act
+		MvcResult mvcResult = this.mockMvcc.perform(get(url, "NCY505","123")).andDo(print()).andExpect(status().isOk())
+				.andReturn();
+		// Assert
+		Assert.assertEquals(200, mvcResult.getResponse().getStatus());
+	}
+	
+	@Test
+	public void pagarTicketVehiculoYaPagoTest() throws Exception {
+		// Arrange
+		final String url = "/registro-service/pagar-ticket/{placa}/{idRegistro}";
+		Vehiculo vehiculo = new VehiculoTestDataBuilder().withPlaca("NCY505").withActivo(0).build();
 		Mockito.when(vehiculoRepository.findByplaca("NCY505")).thenReturn(vehiculo);
 		Registro registro = new RegistroTestDataBuilder().withIdRegistro("123").build();
 		Mockito.when(registroService.getRegistroByidVehiculoAndEstado(vehiculo.getIdVehiculo(), "activo")).thenReturn(registro);
 		Mockito.when(registroService.getRegistroByidVehiculoAndEstadoAndIdRegistro(vehiculo.getIdVehiculo(), "activo",registro.getIdRegistro())).thenReturn(registro);
 		
 		// Act
-		MvcResult mvcResult = this.mockMvcc.perform(get(url, "NCY505","123")).andDo(print()).andExpect(status().isOk())
+		MvcResult mvcResult = this.mockMvcc.perform(get(url, "NCY505", "123")).andDo(print()).andExpect(status().isOk())
+				.andReturn();
+		// Assert
+		Assert.assertEquals(200, mvcResult.getResponse().getStatus());
+	}
+	
+	@Test
+	public void pagarTicketVehiculoSinRegistrosTest() throws Exception {
+		// Arrange
+		final String url = "/registro-service/pagar-ticket/{placa}/{idRegistro}";
+		Vehiculo vehiculo = new VehiculoTestDataBuilder().withPlaca("NCY505").withActivo(1).build();
+		Mockito.when(vehiculoRepository.findByplaca("NCY505")).thenReturn(vehiculo);
+		Registro registro = new RegistroTestDataBuilder().withIdRegistro("123").build();
+		Mockito.when(registroService.getRegistroByidVehiculoAndEstado(vehiculo.getIdVehiculo(), "activo")).thenReturn(null);
+		Mockito.when(registroService.getRegistroByidVehiculoAndEstadoAndIdRegistro(vehiculo.getIdVehiculo(), "activo",registro.getIdRegistro())).thenReturn(null);
+		
+		// Act
+		MvcResult mvcResult = this.mockMvcc.perform(get(url, "NCY505", "123")).andDo(print()).andExpect(status().isOk())
 				.andReturn();
 		// Assert
 		Assert.assertEquals(200, mvcResult.getResponse().getStatus());

@@ -8,6 +8,8 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
@@ -19,6 +21,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import com.ceiba.testdatabuilder.AppParametrosTestDataBuilder;
 import com.ceiba.testdatabuilder.VehiculoTestDataBuilder;
 import com.ceiba.helpers.ReglasParqueaderoHelper;
+import com.ceiba.model.AppLog;
 import com.ceiba.model.AppParametro;
 import com.ceiba.model.Vehiculo;
 import com.ceiba.service.AppParametrosServiceImpl;
@@ -26,6 +29,8 @@ import com.ceiba.service.AppParametrosServiceImpl;
 @RunWith(SpringRunner.class)
 @DataJpaTest
 public class ReglasParqueaderoHelperTest {
+	
+	private static final Logger log = LoggerFactory.getLogger(ReglasParqueaderoHelperTest.class);
 	
 	@TestConfiguration
 	static class AppParametrosServiceImplTestContextConfiguration {
@@ -111,6 +116,8 @@ public class ReglasParqueaderoHelperTest {
 		boolean flag = true;
 		Vehiculo vehiculo = new VehiculoTestDataBuilder().withPlaca("bRM17D").build();
 		ReglasParqueaderoHelper pruHelper = new ReglasParqueaderoHelper();
+		Vehiculo vehiculoPru = new Vehiculo("1");
+		log.info("Valor", vehiculoPru);
 		// Act
 		flag = pruHelper.validarPlacaLunesDomingos(vehiculo.getPlaca());
 		// Assert
@@ -123,6 +130,14 @@ public class ReglasParqueaderoHelperTest {
 		// Arrange
 		AppParametro parametro = new AppParametrosTestDataBuilder().build();
 		Mockito.when(appParametrosService.getParametroByParametro("ValorHoraCarro")).thenReturn(parametro);
+		AppLog appLog = new AppLog();
+		Date date = new Date();
+		appLog.setFecha(date);
+		appLog.setIdLog("1");
+		appLog.setServicio("ValidarCobro");
+		log.info(appLog.getIdLog());
+		log.info(appLog.getFecha().toString());
+		log.info(appLog.getServicio());
 		
 		int valorPagar = 0;
 		int valorEsperado = 2000;
@@ -145,6 +160,13 @@ public class ReglasParqueaderoHelperTest {
 		// Arrange
 		AppParametro parametro = new AppParametrosTestDataBuilder().withParametro("ValorDiaCarro").withValor("8000").build();
 		Mockito.when(appParametrosService.getParametroByParametro("ValorDiaCarro")).thenReturn(parametro);
+		AppParametro parametroCampos = new AppParametro();
+		parametroCampos.setIdParametros("1");
+		parametroCampos.setParametro("Cilindraje");
+		parametroCampos.setValor("5000");
+		log.info(parametroCampos.getIdParametros());
+		log.info(parametroCampos.getParametro());
+		log.info(parametroCampos.getValor());
 		
 		int valorPagar = 0;
 		int valorEsperado = 8000;
@@ -165,6 +187,10 @@ public class ReglasParqueaderoHelperTest {
 	public void validarCobroHoraMoto() throws ParseException {
 		AppParametro parametro = new AppParametrosTestDataBuilder().withParametro("ValorHoraMoto").withValor("500").build();
 		Mockito.when(appParametrosService.getParametroByParametro("ValorHoraMoto")).thenReturn(parametro);
+		AppParametro appParametro = new AppParametrosTestDataBuilder().withIdParametros("1").withParametro("CilindrajeMaxMoto").withValor("500").build();
+		AppParametro appParametroC = new AppParametrosTestDataBuilder().withIdParametros("1").withParametro("ValorCilindrajeMax").withValor("2000").build();
+		Mockito.when(appParametrosService.getParametroByParametro("CilindrajeMaxMoto")).thenReturn(appParametro);
+		Mockito.when(appParametrosService.getParametroByParametro("ValorCilindrajeMax")).thenReturn(appParametroC);		
 		
 		int valorPagar = 0;
 		int valorEsperado = 4000;
@@ -185,6 +211,10 @@ public class ReglasParqueaderoHelperTest {
 	public void validarCobroDiaMoto() throws ParseException {
 		AppParametro parametro = new AppParametrosTestDataBuilder().withParametro("ValorDiaMoto").withValor("600").build();
 		Mockito.when(appParametrosService.getParametroByParametro("ValorDiaMoto")).thenReturn(parametro);
+		AppParametro appParametro = new AppParametrosTestDataBuilder().withIdParametros("1").withParametro("CilindrajeMaxMoto").withValor("500").build();
+		AppParametro appParametroC = new AppParametrosTestDataBuilder().withIdParametros("1").withParametro("ValorCilindrajeMax").withValor("2000").build();
+		Mockito.when(appParametrosService.getParametroByParametro("CilindrajeMaxMoto")).thenReturn(appParametro);
+		Mockito.when(appParametrosService.getParametroByParametro("ValorCilindrajeMax")).thenReturn(appParametroC);		
 		
 		int valorPagar = 0;
 		int valorEsperado = 2600;

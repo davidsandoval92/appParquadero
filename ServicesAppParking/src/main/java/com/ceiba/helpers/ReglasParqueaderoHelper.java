@@ -90,6 +90,8 @@ public class ReglasParqueaderoHelper {
 		int valorDiaMoto = 0;
 		int valorHoraCarro = 0;
 		int valorDiaCarro = 0;
+		int valorCilindajeMax = 0;
+		int cilindrajeMaxMoto = 0;
 
 		int diferencia = (int) ((fechaSalida.getTime() - fechaIngreso.getTime()) / 1000);
 
@@ -115,8 +117,12 @@ public class ReglasParqueaderoHelper {
 				valorHoraMoto = Integer.parseInt(appParametro.getValor());
 				precioPagar = precioPagar + (horas * valorHoraMoto);
 			}
-			if (cilindraje > 500) {
-				precioPagar = precioPagar + 2000;
+			AppParametro appParametroC = appParametrosService.getParametroByParametro("CilindrajeMaxMoto");
+			cilindrajeMaxMoto = Integer.parseInt(appParametroC.getValor());
+			if (cilindraje > cilindrajeMaxMoto) {
+				AppParametro appParametro = appParametrosService.getParametroByParametro("ValorCilindrajeMax");
+				valorCilindajeMax = Integer.parseInt(appParametro.getValor());
+				precioPagar = precioPagar + valorCilindajeMax;
 			}
 		} else {
 
