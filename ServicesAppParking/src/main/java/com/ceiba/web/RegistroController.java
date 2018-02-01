@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ceiba.helpers.SistemaCobro;
 import com.ceiba.helpers.SistemaConsultasHelper;
 import com.ceiba.helpers.SistemaRegistroHelper;
 import com.ceiba.model.Registro;
@@ -101,8 +102,8 @@ public class RegistroController {
 	@RequestMapping(method = RequestMethod.GET, value = "/pagar-ticket/{placa}/{idRegistro}")
 	public Map<Object, Object> pagarTicketCarro(@PathVariable String placa, @PathVariable String idRegistro) {
 
-		SistemaRegistroHelper registrohelper = new SistemaRegistroHelper();
-		return registrohelper.validacionesPagarTicket(vehiculoService, registroService, appParametrosService, placa,
+		SistemaCobro sistemaCobro = new SistemaCobro();
+		return sistemaCobro.validacionesPagarTicket(vehiculoService, registroService, appParametrosService, placa,
 				idRegistro);
 	}
 
